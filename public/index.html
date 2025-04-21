@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FURBTC Nebula Feast</title>
+  <link rel="icon" type="image/png" href="fur.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: radial-gradient(circle, #1a1a2e, #0f0f1f);
+      overflow: hidden;
+      font-family: 'Press Start 2P', cursive;
+    }
+    canvas {
+      display: none;
+      width: 100vw !important;
+      height: 100vh !important;
+    }
+    #menu, #mode-selection, #name-input, #eaten-notification {
+      text-align: center;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 3px solid #00ffcc;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+      max-width: 500px;
+      width: 90%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1 {
+      font-size: 32px;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+      margin-bottom: 40px;
+      letter-spacing: 2px;
+    }
+    #eaten-notification p {
+      color: #fff;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #eaten-notification .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    #menu button, #mode-selection button, #name-input button, #eaten-notification button {
+      padding: 15px 30px;
+      font-size: 16px;
+      font-family: 'Press Start 2P', cursive;
+      color: #fff;
+      border: 2px solid #00ffcc;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    #menu button.play, #mode-selection button.play, #name-input button.play, #eaten-notification button.play {
+      background: linear-gradient(45deg, #00ffcc, #0077b6);
+    }
+    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #eaten-notification button.play:hover {
+      background: linear-gradient(45deg, #00cc99, #005f8c);
+      box-shadow: 0 0 15px #00ffcc;
+      transform: scale(1.05);
+    }
+    #menu button.locked, #mode-selection button.locked, #name-input button.locked, #eaten-notification button.locked {
+      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      border-color: #666;
+      color: #999;
+      cursor: not-allowed;
+    }
+    #menu button.locked:hover, #mode-selection button.locked:hover, #name-input button.locked:hover, #eaten-notification button.locked:hover {
+      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
+      transform: none;
+      box-shadow: none;
+    }
+    #menu button i, #mode-selection button i, #name-input button i, #eaten-notification button i {
+      font-size: 18px;
+    }
+    #name-input input {
+      padding: 10px;
+      font-size: 16px;
+      font-family: 'Press Start 2P', cursive;
+      color: #00ffcc;
+      background: #1a1a2e;
+      border: 2px solid #00ffcc;
+      border-radius: 5px;
+      width: 80%;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    #joystick {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 100px;
+      height: 100px;
+      background: rgba(0, 255, 204, 0.3);
+      border: 2px solid #00ffcc;
+      border-radius: 50%;
+      display: none;
+      box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    }
+    #joystick-knob {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #00ffcc;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px #00ffcc;
+    }
+    #skill-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(45deg, #ff4500, #cc3700);
+      border: 2px solid #00ffcc;
+      border-radius: 50%;
+      color: #fff;
+      text-align: center;
+      line-height: 60px;
+      font-size: 12px;
+      font-family: 'Press Start 2P', cursive;
+      display: none;
+      box-shadow: 0 0 10px #ff4500;
+    }
+    @media (max-width: 600px) {
+      #menu, #mode-selection, #name-input, #eaten-notification {
+        padding: 15px;
+      }
+      #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1 {
+        font-size: 24px;
+        margin-bottom: 30px;
+      }
+      #menu button, #mode-selection button, #name-input button, #eaten-notification button {
+        font-size: 14px;
+        padding: 12px 25px;
+      }
+      #joystick, #skill-button {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="menu">
+    <h1>$FURBTC NEBULA FEAST</h1>
+    <div class="button-container">
+      <button class="play" onclick="showModeSelection()"><i class="fas fa-play"></i> Play as Guest</button>
+      <button class="locked" disabled><i class="fas fa-users"></i> PVP (P2E/LOCKED)</button>
+      <button class="locked" disabled><i class="fas fa-store"></i> Web3 Marketplace</button>
+      <button class="locked" disabled><i class="fas fa-backpack"></i> Inventory (LOCKED)</button>
+    </div>
+  </div>
+  <div id="mode-selection" style="display: none;">
+    <h1>SELECT MODE</h1>
+    <div class="button-container">
+      <button class="play" onclick="showNameInput('single')"><i class="fas fa-user"></i> Single Player</button>
+      <button class="play" onclick="showNameInput('multi')"><i class="fas fa-users"></i> Multiplayer</button>
+    </div>
+  </div>
+  <div id="name-input" style="display: none;">
+    <h1>ENTER NAME</h1>
+    <input type="text" id="player-name" maxlength="12" placeholder="Your Name">
+    <div class="button-container">
+      <button class="play" onclick="startGame()"><i class="fas fa-play"></i> Start Game</button>
+    </div>
+  </div>
+  <div id="eaten-notification" style="display: none;">
+    <h1>GAME OVER</h1>
+    <p id="eaten-message">You have been eaten!</p>
+    <div class="button-container">
+      <button class="play" onclick="returnToMenu()"><i class="fas fa-home"></i> Back to Menu</button>
+    </div>
+  </div>
+  <div id="joystick">
+    <div id="joystick-knob"></div>
+  </div>
+  <div id="skill-button"><i class="fas fa-rocket"></i></div>
+  <script>
+    let socket;
+    let gameStarted = false;
+    let gameMode = null;
+    let playerName = '';
+    let worldWidth = 4000;
+    let worldHeight = 4000;
+    let cameraX = 0;
+    let cameraY = 0;
+    let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    let joystick = { active: false, x: 0, y: 0, baseX: 70, baseY: window.innerHeight - 70 };
+    let playerId = null;
+    let isAlive = true;
+
+    // Single-player state
+    let player;
+    let bots = [];
+    let foods = [];
+    let bushes = [];
+    let botNames = ["Mosim", "Rober", "Ho", "Kuba", "Pelot", "Wetefec"];
+    let leaderboard = [];
+    let speedBoostActive = false;
+    let speedBoostCooldown = 0;
+    let speedBoostTimer = 0;
+
+    // Multiplayer state
+    let gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+
+    function setup() {
+      if (gameStarted) {
+        let canvasWidth = window.innerWidth;
+        let canvasHeight = window.innerHeight;
+        createCanvas(canvasWidth, canvasHeight);
+        if (gameMode === 'single') {
+          player = new Cell(worldWidth / 2, worldHeight / 2, 20, true);
+          player.name = playerName || 'Player';
+          for (let i = 0; i < 10; i++) {
+            let bot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+            bot.name = botNames[i % botNames.length] + i;
+            bots.push(bot);
+          }
+          for (let i = 0; i < 1000; i++) {
+            foods.push(new Food());
+          }
+          for (let i = 0; i < 20; i++) {
+            bushes.push(new Bush());
+          }
+        }
+        if (isMobile) {
+          setupTouchControls();
+        }
+      }
+    }
+
+    function draw() {
+      if (gameStarted && isAlive) {
+        if (gameMode === 'single') {
+          if (speedBoostActive) {
+            speedBoostTimer--;
+            if (speedBoostTimer <= 0) {
+              speedBoostActive = false;
+              speedBoostCooldown = 600;
+            }
+          } else if (speedBoostCooldown > 0) {
+            speedBoostCooldown--;
+          }
+
+          cameraX = lerp(cameraX, player.pos.x - width / 2, 0.1);
+          cameraY = lerp(cameraY, player.pos.y - height / 2, 0.1);
+
+          background(10, 10, 30);
+          push();
+          translate(-cameraX, -cameraY);
+          stroke(50, 50, 80);
+          strokeWeight(1);
+          for (let x = 0; x < worldWidth; x += 50) {
+            line(x, 0, x, worldHeight);
+          }
+          for (let y = 0; y < worldHeight; y += 50) {
+            line(0, y, worldWidth, y);
+          }
+
+          stroke(0, 255, 204);
+          strokeWeight(3);
+          noFill();
+          rect(0, 0, worldWidth, worldHeight);
+
+          for (let food of foods) {
+            food.show();
+          }
+
+          for (let bush of bushes) {
+            bush.show();
+          }
+
+          player.update();
+          player.show();
+
+          for (let bot of bots) {
+            bot.update();
+            bot.show();
+          }
+
+          for (let i = foods.length - 1; i >= 0; i--) {
+            if (player.eats(foods[i])) {
+              foods.splice(i, 1);
+              foods.push(new Food());
+            }
+          }
+
+          for (let bot of bots) {
+            for (let i = foods.length - 1; i >= 0; i--) {
+              if (bot.eats(foods[i])) {
+                foods.splice(i, 1);
+                foods.push(new Food());
+              }
+            }
+          }
+
+          for (let i = bots.length - 1; i >= 0; i--) {
+            if (player.canEat(bots[i])) {
+              player.eatCell(bots[i]);
+              bots.splice(i, 1);
+              let newBot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+              newBot.name = botNames[i % botNames.length] + i;
+              bots.push(newBot);
+            } else if (bots[i].canEat(player)) {
+              // Bot eats player
+              isAlive = false;
+              gameStarted = false;
+              document.getElementById('eaten-notification').style.display = 'block';
+              document.getElementById('eaten-message').textContent = `You were eaten by ${bots[i].name}!`;
+              return;
+            }
+          }
+
+          for (let i = bots.length - 1; i >= 0; i--) {
+            for (let j = bots.length - 1; j >= 0; j--) {
+              if (i !== j && bots[i].canEat(bots[j])) {
+                bots[i].eatCell(bots[j]);
+                bots.splice(j, 1);
+                let newBot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+                newBot.name = botNames[j % botNames.length] + j;
+                bots.push(newBot);
+              }
+            }
+          }
+
+          pop();
+
+          updateLeaderboard();
+          drawLeaderboard();
+          drawMinimap();
+          drawSpeedBoostStatus();
+
+          if (isMobile && joystick.active) {
+            updateJoystick();
+          }
+        } else {
+          if (!gameState.players[playerId] || !isAlive) {
+            return; // Skip rendering if player is not alive or not in game
+          }
+
+          cameraX = lerp(cameraX, gameState.players[playerId].pos.x - width / 2, 0.1);
+          cameraY = lerp(cameraY, gameState.players[playerId].pos.y - height / 2, 0.1);
+
+          background(10, 10, 30);
+          push();
+          translate(-cameraX, -cameraY);
+          stroke(50, 50, 80);
+          strokeWeight(1);
+          for (let x = 0; x < worldWidth; x += 50) {
+            line(x, 0, x, worldHeight);
+          }
+          for (let y = 0; y < worldHeight; y += 50) {
+            line(0, y, worldWidth, y);
+          }
+
+          stroke(0, 255, 204);
+          strokeWeight(3);
+          noFill();
+          rect(0, 0, worldWidth, worldHeight);
+
+          for (let food of gameState.foods) {
+            fill(255, 165, 0);
+            noStroke();
+            ellipse(food.pos.x, food.pos.y, food.r * 2);
+          }
+
+          for (let bush of gameState.bushes) {
+            fill(0, 128, 0);
+            noStroke();
+            ellipse(bush.pos.x, bush.pos.y, bush.r * 2);
+          }
+
+          for (let id in gameState.players) {
+            let player = gameState.players[id];
+            let isHidden = false;
+            for (let bush of gameState.bushes) {
+              let d = dist(player.pos.x, player.pos.y, bush.pos.x, bush.pos.y);
+              if (d < bush.r + player.r) {
+                isHidden = true;
+                break;
+              }
+            }
+            fill(255, 165, 0, isHidden ? 100 : 255);
+            noStroke();
+            ellipse(player.pos.x, player.pos.y, player.r * 2);
+            if (id === playerId) {
+              for (let i = 0; i < 50; i++) {
+                let angle = random(TWO_PI);
+                let dist = random(player.r, player.r * 1.2);
+                let x = player.pos.x + cos(angle) * dist;
+                let y = player.pos.y + sin(angle) * dist;
+                fill(255, 140, 0, isHidden ? 50 : 200);
+                ellipse(x, y, 3);
+              }
+              fill(255, 245, 220, isHidden ? 100 : 255);
+              textAlign(CENTER, CENTER);
+              textSize(player.r * 1.2);
+              textStyle(BOLD);
+              text("₿", player.pos.x, player.pos.y);
+            }
+            fill(255, 255, 255, isHidden ? 100 : 255);
+            textAlign(CENTER);
+            textSize(12);
+            text(player.name, player.pos.x, player.pos.y - player.r - 10);
+          }
+
+          for (let bot of gameState.bots) {
+            let isHidden = false;
+            for (let bush of gameState.bushes) {
+              let d = dist(bot.pos.x, bot.pos.y, bush.pos.x, bush.pos.y);
+              if (d < bush.r + bot.r) {
+                isHidden = true;
+                break;
+              }
+            }
+            fill(255, 0, 0, isHidden ? 100 : 255);
+            noStroke();
+            ellipse(bot.pos.x, bot.pos.y, bot.r * 2);
+            fill(255, 255, 255, isHidden ? 100 : 255);
+            textAlign(CENTER);
+            textSize(12);
+            text(bot.name, bot.pos.x, bot.pos.y - bot.r - 10);
+          }
+
+          pop();
+
+          drawLeaderboard();
+          drawMinimap();
+          drawSpeedBoostStatus();
+
+          if (isMobile && joystick.active) {
+            updateJoystick();
+          }
+
+          let input = {};
+          if (isMobile && joystick.active) {
+            input.joystick = { x: joystick.x, y: joystick.y };
+          } else {
+            input.mouse = { x: mouseX + cameraX, y: mouseY + cameraY };
+          }
+          if (socket && isAlive) {
+            socket.emit('playerInput', input);
+          }
+        }
+      }
+    }
+
+    function keyPressed() {
+      if (keyCode === 32 && isAlive) {
+        if (gameMode === 'single' && !speedBoostActive && speedBoostCooldown <= 0) {
+          speedBoostActive = true;
+          speedBoostTimer = 180;
+        } else if (gameMode === 'multi' && socket) {
+          socket.emit('playerInput', { speedBoost: true });
+        }
+      }
+    }
+
+    function showModeSelection() {
+      document.getElementById('menu').style.display = 'block';
+      document.getElementById('mode-selection').style.display = 'block';
+      document.getElementById('name-input').style.display = 'none';
+      document.getElementById('eaten-notification').style.display = 'none';
+    }
+
+    function showNameInput(mode) {
+      gameMode = mode;
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('name-input').style.display = 'block';
+      document.getElementById('player-name').focus();
+    }
+
+    function returnToMenu() {
+      gameStarted = false;
+      isAlive = true;
+      playerId = null;
+      gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        canvas.style.display = 'none';
+      }
+      document.getElementById('eaten-notification').style.display = 'none';
+      document.getElementById('menu').style.display = 'block';
+      if (gameMode === 'multi' && socket) {
+        socket.disconnect();
+        socket = null;
+      }
+      remove(); // Stop p5.js canvas
+    }
+
+    window.startGame = function() {
+      playerName = document.getElementById('player-name').value.trim();
+      if (playerName.length > 12) playerName = playerName.slice(0, 12);
+      if (!playerName) playerName = 'Player';
+      document.getElementById('name-input').style.display = 'none';
+      document.getElementById('menu').style.display = 'none';
+      const canvas = document.querySelector('canvas');
+      if (canvas) {
+        canvas.style.display = 'block';
+      }
+      gameStarted = true;
+      isAlive = true;
+      setup();
+      if (gameMode === 'multi') {
+        socket = io();
+        socket.on('connect', () => {
+          playerId = socket.id;
+          socket.emit('playerJoin', playerName);
+        });
+        socket.on('gameState', (state) => {
+          if (isAlive && state.players[playerId]) {
+            gameState = state;
+          }
+        });
+        socket.on('eaten', (data) => {
+          console.log('Eaten event received:', data);
+          isAlive = false;
+          gameStarted = false;
+          playerId = null;
+          gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+          document.getElementById('eaten-notification').style.display = 'block';
+          document.getElementById('eaten-message').textContent = `You were eaten by ${data.eater}!`;
+          if (socket) {
+            socket.disconnect();
+            socket = null;
+          }
+        });
+      }
+    };
+
+    function setupTouchControls() {
+      let joystickDiv = document.getElementById('joystick');
+      let skillButton = document.getElementById('skill-button');
+
+      joystickDiv.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        joystick.active = true;
+      });
+
+      joystickDiv.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        let touch = e.touches[0];
+        let rect = joystickDiv.getBoundingClientRect();
+        joystick.x = touch.clientX - rect.left - 50;
+        joystick.y = touch.clientY - rect.top - 50;
+        let dist = sqrt(joystick.x * joystick.x + joystick.y * joystick.y);
+        if (dist > 30) {
+          let angle = atan2(joystick.y, joystick.x);
+          joystick.x = 30 * cos(angle);
+          joystick.y = 30 * sin(angle);
+        }
+      });
+
+      joystickDiv.addEventListener('touchend', () => {
+        joystick.active = false;
+        joystick.x = 0;
+        joystick.y = 0;
+      });
+
+      skillButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        if (gameMode === 'single' && !speedBoostActive && speedBoostCooldown <= 0) {
+          speedBoostActive = true;
+          speedBoostTimer = 180;
+        } else if (gameMode === 'multi' && socket && isAlive) {
+          socket.emit('playerInput', { speedBoost: true });
+        }
+      });
+    }
+
+    function updateJoystick() {
+      let knob = document.getElementById('joystick-knob');
+      knob.style.left = (50 + joystick.x) + 'px';
+      knob.style.top = (50 + joystick.y) + 'px';
+    }
+
+    function updateLeaderboard() {
+      leaderboard = [];
+      leaderboard.push({ name: player.name, size: floor(player.r) });
+      for (let bot of bots) {
+        leaderboard.push({ name: bot.name, size: floor(bot.r) });
+      }
+      leaderboard.sort((a, b) => b.size - a.size);
+      leaderboard = leaderboard.slice(0, 5);
+    }
+
+    function drawLeaderboard() {
+      push();
+      fill(0, 0, 50, 200);
+      stroke(0, 255, 204);
+      strokeWeight(2);
+      rect(10, 10, 180, 160, 10);
+      fill(0, 255, 204);
+      textSize(14);
+      textAlign(LEFT);
+      textStyle(NORMAL);
+      textFont('Press Start 2P');
+      text('\uF091 Leaderboard', 20, 35);
+      fill(255);
+      textSize(12);
+      if (gameMode === 'single') {
+        for (let i = 0; i < leaderboard.length; i++) {
+          text(`${i + 1}. ${leaderboard[i].name}: ${leaderboard[i].size}`, 20, 60 + i * 20);
+        }
+      } else {
+        for (let i = 0; i < gameState.leaderboard.length; i++) {
+          text(`${i + 1}. ${gameState.leaderboard[i].name}: ${gameState.leaderboard[i].size}`, 20, 60 + i * 20);
+        }
+      }
+      pop();
+    }
+
+    function drawMinimap() {
+      let miniWidth = 100;
+      let miniHeight = 100;
+      let scaleX = miniWidth / worldWidth;
+      let scaleY = miniHeight / worldHeight;
+      push();
+      translate(width - miniWidth - 10, height - miniHeight - 10);
+      fill(0, 0, 50, 200);
+      stroke(0, 255, 204);
+      strokeWeight(2);
+      rect(0, 0, miniWidth, miniHeight, 5);
+      fill(0, 255, 204);
+      textSize(10);
+      textFont('Press Start 2P');
+      textAlign(LEFT);
+      text('\uF3C5 Map', 5, 15);
+
+      if (gameMode === 'single') {
+        fill(0, 128, 0);
+        noStroke();
+        for (let bush of bushes) {
+          ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
+        }
+
+        fill(255, 165, 0);
+        ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
+
+        fill(255, 0, 0);
+        for (let bot of bots) {
+          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+        }
+      } else {
+        fill(0, 128, 0);
+        noStroke();
+        for (let bush of gameState.bushes) {
+          ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
+        }
+
+        for (let id in gameState.players) {
+          let player = gameState.players[id];
+          fill(id === playerId ? 255 : 255, id === playerId ? 165 : 255, 0);
+          ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
+        }
+
+        fill(255, 0, 0);
+        for (let bot of gameState.bots) {
+          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+        }
+      }
+      pop();
+    }
+
+    function drawSpeedBoostStatus() {
+      push();
+      fill(0, 0, 50, 200);
+      stroke(0, 255, 204);
+      strokeWeight(2);
+      rect(width - 120, 10, 110, 50, 10);
+      fill(0, 255, 204);
+      textSize(10);
+      textFont('Press Start 2P');
+      textAlign(CENTER);
+      if (gameMode === 'single') {
+        if (speedBoostActive) {
+          fill(255, 69, 0);
+          text('\uF135 Speed: ON', width - 65, 35);
+        } else if (speedBoostCooldown > 0) {
+          fill(255);
+          text(`\uF135 ${ceil(speedBoostCooldown / 60)}s`, width - 65, 35);
+        } else {
+          fill(0, 255, 204);
+          text('\uF135 Ready', width - 65, 35);
+        }
+      } else {
+        let player = gameState.players[playerId];
+        if (player && player.speedBoostActive) {
+          fill(255, 69, 0);
+          text('\uF135 Speed: ON', width - 65, 35);
+        } else if (player && player.speedBoostCooldown > 0) {
+          fill(255);
+          text(`\uF135 ${ceil(player.speedBoostCooldown / 60)}s`, width - 65, 35);
+        } else {
+          fill(0, 255, 204);
+          text('\uF135 Ready', width - 65, 35);
+        }
+      }
+      pop();
+    }
+
+    class Cell {
+      constructor(x, y, r, isPlayer) {
+        this.pos = createVector(x, y);
+        this.r = r;
+        this.vel = createVector(0, 0);
+        this.isPlayer = isPlayer;
+        this.target = isPlayer ? null : createVector(random(worldWidth), random(worldHeight));
+        this.name = "";
+      }
+
+      update() {
+        let speedMultiplier = 1;
+        if (this.isPlayer && speedBoostActive) {
+          speedMultiplier = 1.8;
+        }
+        if (this.isPlayer) {
+          let dir;
+          if (isMobile && joystick.active) {
+            dir = createVector(joystick.x * 5, joystick.y * 5);
+          } else {
+            let mouse = createVector(mouseX + cameraX, mouseY + cameraY);
+            dir = p5.Vector.sub(mouse, this.pos);
+          }
+          dir.setMag(3.6 * speedMultiplier / sqrt(this.r));
+          this.vel.lerp(dir, 0.1);
+        } else {
+          let nearest = this.findNearestFood();
+          if (nearest && p5.Vector.dist(this.pos, nearest.pos) < 200) {
+            this.target = nearest.pos;
+          } else if (p5.Vector.dist(this.pos, this.target) < 50) {
+            this.target = createVector(random(worldWidth), random(worldHeight));
+          }
+          let dir = p5.Vector.sub(this.target, this.pos);
+          dir.setMag(2 / sqrt(this.r));
+          this.vel.lerp(dir, 0.05);
+        }
+        this.pos.add(this.vel);
+        this.pos.x = constrain(this.pos.x, this.r, worldWidth - this.r);
+        this.pos.y = constrain(this.pos.y, this.r, worldHeight - this.r);
+      }
+
+      findNearestFood() {
+        let nearest = null;
+        let minDist = Infinity;
+        for (let food of foods) {
+          let d = p5.Vector.dist(this.pos, food.pos);
+          if (d < minDist) {
+            minDist = d;
+            nearest = food;
+          }
+        }
+        return nearest;
+      }
+
+      show() {
+        let isHidden = false;
+        for (let bush of bushes) {
+          if (p5.Vector.dist(this.pos, bush.pos) < bush.r + this.r) {
+            isHidden = true;
+            break;
+          }
+        }
+        push();
+        if (this.isPlayer) {
+          fill(255, 165, 0, isHidden ? 100 : 255);
+          noStroke();
+          ellipse(this.pos.x, this.pos.y, this.r * 2);
+          for (let i = 0; i < 50; i++) {
+            let angle = random(TWO_PI);
+            let dist = random(this.r, this.r * 1.2);
+            let x = this.pos.x + cos(angle) * dist;
+            let y = this.pos.y + sin(angle) * dist;
+            fill(255, 140, 0, isHidden ? 50 : 200);
+            ellipse(x, y, 3);
+          }
+          fill(255, 245, 220, isHidden ? 100 : 255);
+          textAlign(CENTER, CENTER);
+          textSize(this.r * 1.2);
+          textStyle(BOLD);
+          text("₿", this.pos.x, this.pos.y);
+          fill(255, 255, 255, isHidden ? 100 : 255);
+          textAlign(CENTER);
+          textSize(12);
+          text(this.name, this.pos.x, this.pos.y - this.r - 10);
+        } else {
+          fill(255, 0, 0, isHidden ? 100 : 255);
+          noStroke();
+          ellipse(this.pos.x, this.pos.y, this.r * 2);
+          fill(255, 255, 255, isHidden ? 100 : 255);
+          textAlign(CENTER);
+          textSize(12);
+          text(this.name, this.pos.x, this.pos.y - this.r - 10);
+        }
+        pop();
+      }
+
+      eats(food) {
+        let d = p5.Vector.dist(this.pos, food.pos);
+        if (d < this.r + food.r) {
+          let area = PI * this.r * this.r + PI * food.r * food.r;
+          this.r = sqrt(area / PI);
+          return true;
+        }
+        return false;
+      }
+
+      canEat(other) {
+        let d = p5.Vector.dist(this.pos, other.pos);
+        return this.r > other.r * 1.1 && d < this.r + other.r;
+      }
+
+      eatCell(other) {
+        let area = PI * this.r * this.r + PI * other.r * other.r;
+        this.r = sqrt(area / PI);
+      }
+    }
+
+    class Food {
+      constructor() {
+        this.pos = createVector(random(worldWidth), random(worldHeight));
+        this.r = 5;
+      }
+
+      show() {
+        fill(255, 165, 0);
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r * 2);
+      }
+    }
+
+    class Bush {
+      constructor() {
+        this.pos = createVector(random(worldWidth), random(worldHeight));
+        this.r = 30;
+      }
+
+      show() {
+        fill(0, 128, 0);
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r * 2);
+      }
+    }
+
+    // Fallback for storage access
+    function safeStorageAccess(key, value) {
+      try {
+        if (value !== undefined) {
+          localStorage.setItem(key, value);
+        } else {
+          return localStorage.getItem(key);
+        }
+      } catch (e) {
+        console.warn('Storage access failed:', e.message);
+        return null;
+      }
+    }
+  </script>
+</body>
+</html>
