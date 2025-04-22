@@ -619,7 +619,7 @@
       textAlign(LEFT);
       textStyle(NORMAL);
       textFont('Press Start 2P');
-      text('\uF091 Leaderboard', 20, 35);
+      text('Leaderboard', 20, 35);
       fill(255);
       textSize(12);
       if (gameMode === 'single') {
@@ -635,93 +635,177 @@
     }
 
     function drawMinimap() {
-      let miniWidth = 100;
-      let miniHeight = 100;
-      let scaleX = miniWidth / worldWidth;
-      let scaleY = miniHeight / worldHeight;
-      push();
-      translate(width - miniWidth - 10, height - miniHeight - 10);
-      fill(0, 0, 50, 200);
-      stroke(0, 255, 204);
-      strokeWeight(2);
-      rect(0, 0, miniWidth, miniHeight, 5);
-      fill(0, 255, 204);
-      textSize(10);
-      textFont('Press Start 2P');
-      textAlign(LEFT);
-      text('\uF3C5 Map', 5, 15);
+  let miniWidth = 100;
+  let miniHeight = 100;
+  let scaleX = miniWidth / worldWidth;
+  let scaleY = miniHeight / worldHeight;
 
-      if (gameMode === 'single') {
-        fill(0, 128, 0);
-        noStroke();
-        for (let bush of bushes) {
-          ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
-        }
+  // Detect mobile
+  let isMobile = windowWidth < 768; // You can adjust this breakpoint as needed
 
-        fill(255, 165, 0);
-        ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
+  push();
 
-        fill(255, 0, 0);
-        for (let bot of bots) {
-          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
-        }
-      } else {
-        fill(0, 128, 0);
-        noStroke();
-        for (let bush of gameState.bushes) {
-          ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
-        }
+  // Position: top-right on mobile, bottom-right on desktop
+  if (isMobile) {
+    translate(width - miniWidth - 10, 10);
+  } else {
+    translate(width - miniWidth - 10, height - miniHeight - 10);
+  }
 
-        for (let id in gameState.players) {
-          let player = gameState.players[id];
-          fill(id === playerId ? 255 : 255, id === playerId ? 165 : 255, 0);
-          ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
-        }
+  // Draw minimap box
+  fill(0, 0, 50, 200);
+  stroke(0, 255, 204);
+  strokeWeight(2);
+  rect(0, 0, miniWidth, miniHeight, 5);
 
-        fill(255, 0, 0);
-        for (let bot of gameState.bots) {
-          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
-        }
-      }
-      pop();
+  // Label
+  fill(0, 255, 204);
+  textSize(10);
+  textFont('Press Start 2P');
+  textAlign(LEFT);
+  text('Map', 5, 15);
+
+  // Draw contents
+  if (gameMode === 'single') {
+    fill(0, 128, 0);
+    noStroke();
+    for (let bush of bushes) {
+      ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
     }
 
-    function drawSpeedBoostStatus() {
-      push();
-      fill(0, 0, 50, 200);
-      stroke(0, 255, 204);
-      strokeWeight(2);
-      rect(width - 120, 10, 110, 50, 10);
-      fill(0, 255, 204);
-      textSize(10);
-      textFont('Press Start 2P');
-      textAlign(CENTER);
-      if (gameMode === 'single') {
-        if (speedBoostActive) {
-          fill(255, 69, 0);
-          text('\uF135 Speed: ON', width - 65, 35);
-        } else if (speedBoostCooldown > 0) {
-          fill(255);
-          text(`\uF135 ${ceil(speedBoostCooldown / 60)}s`, width - 65, 35);
-        } else {
-          fill(0, 255, 204);
-          text('\uF135 Ready', width - 65, 35);
-        }
-      } else {
-        let player = gameState.players[playerId];
-        if (player && player.speedBoostActive) {
-          fill(255, 69, 0);
-          text('\uF135 Speed: ON', width - 65, 35);
-        } else if (player && player.speedBoostCooldown > 0) {
-          fill(255);
-          text(`\uF135 ${ceil(player.speedBoostCooldown / 60)}s`, width - 65, 35);
-        } else {
-          fill(0, 255, 204);
-          text('\uF135 Ready', width - 65, 35);
-        }
-      }
-      pop();
+    fill(255, 165, 0);
+    ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
+
+    fill(255, 0, 0);
+    for (let bot of bots) {
+      ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
     }
+
+  } else {
+    fill(0, 128, 0);
+    noStroke();
+    for (let bush of gameState.bushes) {
+      ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
+    }
+
+    for (let id in gameState.players) {
+      let p = gameState.players[id];
+      fill(id === playerId ? 255 : 255, id === playerId ? 165 : 255, 0);
+      ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
+    }
+
+    fill(255, 0, 0);
+    for (let bot of gameState.bots) {
+      ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+    }
+  }
+
+  pop();
+}
+
+function drawSpeedBoostStatus() {
+  push();
+
+  // Detect mobile
+  let isMobile = windowWidth < 768;
+
+  // Box size
+  let boxWidth = isMobile ? 50 : 110;
+  let boxHeight = isMobile ? 110 : 50;
+
+  // Position
+  let x = isMobile ? width - boxWidth - 10 : width - boxWidth - 10;
+  let y = isMobile ? height / 2 - boxHeight / 2 : 10;
+
+  // Draw container
+  fill(0, 0, 50, 200);
+  stroke(0, 255, 204);
+  strokeWeight(2);
+  rect(x, y, boxWidth, boxHeight, 10);
+
+  // Values for logic
+  let maxDuration = 180; // speed boost duration
+  let maxCooldown = 300; // cooldown duration
+  let progress = 1;
+
+  if (gameMode === 'single') {
+    if (speedBoostActive) {
+      progress = speedBoostTimer / maxDuration;
+    } else if (speedBoostCooldown > 0) {
+      progress = 1 - (speedBoostCooldown / maxCooldown);
+    } else {
+      progress = 1;
+    }
+  } else {
+    let player = gameState.players[playerId];
+    if (player) {
+      if (player.speedBoostActive) {
+        progress = player.speedBoostTimer / maxDuration;
+      } else if (player.speedBoostCooldown > 0) {
+        progress = 1 - (player.speedBoostCooldown / maxCooldown);
+      } else {
+        progress = 1;
+      }
+    }
+  }
+
+  // Draw loader bar (horizontal for desktop, vertical for mobile)
+  if (isMobile) {
+    let barX = x + 15;
+    let barY = y + 15;
+    let barWidth = 20;
+    let barHeight = 80;
+
+    // Background bar
+    noStroke();
+    fill(80);
+    rect(barX, barY, barWidth, barHeight, 5);
+
+    // Filled bar from bottom to top
+    let filledHeight = barHeight * progress;
+    if (progress < 1 && progress > 0) {
+      fill(255, 69, 0);
+    } else {
+      fill(0, 255, 204);
+    }
+    rect(barX, barY + (barHeight - filledHeight), barWidth, filledHeight, 5);
+
+    // Icon at top
+    fill(0, 255, 204);
+    textSize(10);
+    textFont('Press Start 2P');
+    textAlign(CENTER);
+    text('BOOST', x + boxWidth / 2, y + 10);
+  } else {
+    // Desktop: horizontal loader
+    let barX = x + 15;
+    let barY = y + 30;
+    let barWidth = 80;
+    let barHeight = 10;
+
+    noStroke();
+    fill(80);
+    rect(barX, barY, barWidth, barHeight, 5);
+
+    if (progress < 1 && progress > 0) {
+      fill(255, 69, 0);
+    } else {
+      fill(0, 255, 204);
+    }
+    rect(barX, barY, barWidth * progress, barHeight, 5);
+
+    // Icon top center
+    fill(0, 255, 204);
+    textSize(10);
+    textFont('Press Start 2P');
+    textAlign(CENTER);
+    text('BOOST', x + boxWidth / 2, y + 15);
+  }
+
+  pop();
+}
+
+
 
     class Cell {
       constructor(x, y, r, isPlayer) {
@@ -736,7 +820,7 @@
       update() {
         let speedMultiplier = 1;
         if (this.isPlayer && speedBoostActive) {
-          speedMultiplier = 1.8;
+          speedMultiplier = 3.8;
         }
         if (this.isPlayer) {
           let dir;
