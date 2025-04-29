@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FURBTC Nebula Feast</title>
-  <link rel="icon" type="image/png" href="fur.png">
+  <title>$TOILET Flush Frenzy</title>
+  <link rel="icon" type="image/png" href="plungers.jpg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: radial-gradient(circle, #1a1a2e, #0f0f1f);
+      background: radial-gradient(circle, #1e3a5f, #0f1f3f);
       overflow: hidden;
       font-family: 'Press Start 2P', cursive;
     }
@@ -25,13 +25,13 @@
       width: 100vw !important;
       height: 100vh !important;
     }
-    #menu, #mode-selection, #name-input, #eaten-notification {
+    #menu, #mode-selection, #name-input, #eaten-notification, #avatar-menu {
       text-align: center;
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
-      border: 3px solid #00ffcc;
+      border: 3px solid #40c4ff;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+      box-shadow: 0 0 20px rgba(64, 196, 255, 0.5);
       max-width: 500px;
       width: 90%;
       position: absolute;
@@ -39,10 +39,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
-    #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1 {
+    #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1, #avatar-menu h1 {
       font-size: 32px;
-      color: #00ffcc;
-      text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+      color: #40c4ff;
+      text-shadow: 0 0 10px #40c4ff, 0 0 20px #40c4ff;
       margin-bottom: 40px;
       letter-spacing: 2px;
     }
@@ -51,17 +51,17 @@
       font-size: 16px;
       margin-bottom: 20px;
     }
-    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #eaten-notification .button-container {
+    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #eaten-notification .button-container, #avatar-menu .button-container {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    #menu button, #mode-selection button, #name-input button, #eaten-notification button {
+    #menu button, #mode-selection button, #name-input button, #eaten-notification button, #avatar-menu button {
       padding: 15px 30px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
       color: #fff;
-      border: 2px solid #00ffcc;
+      border: 2px solid #40c4ff;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -72,39 +72,56 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    #menu button.play, #mode-selection button.play, #name-input button.play, #eaten-notification button.play {
-      background: linear-gradient(45deg, #00ffcc, #0077b6);
+    #menu button.play, #mode-selection button.play, #name-input button.play, #eaten-notification button.play, #avatar-menu button.play {
+      background: linear-gradient(45deg, #40c4ff, #0288d1);
     }
-    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #eaten-notification button.play:hover {
-      background: linear-gradient(45deg, #00cc99, #005f8c);
-      box-shadow: 0 0 15px #00ffcc;
+    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #eaten-notification button.play:hover, #avatar-menu button.play:hover {
+      background: linear-gradient(45deg, #29b6f6, #0277bd);
+      box-shadow: 0 0 15px #40c4ff;
       transform: scale(1.05);
-    }
-    #menu button.locked, #mode-selection button.locked, #name-input button.locked, #eaten-notification button.locked {
-      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
-      border-color: #666;
-      color: #999;
-      cursor: not-allowed;
-    }
-    #menu button.locked:hover, #mode-selection button.locked:hover, #name-input button.locked:hover, #eaten-notification button.locked:hover {
-      background: linear-gradient(45deg, #4a4a4a, #2a2a2a);
-      transform: none;
-      box-shadow: none;
-    }
-    #menu button i, #mode-selection button i, #name-input button i, #eaten-notification button i {
-      font-size: 18px;
     }
     #name-input input {
       padding: 10px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
-      color: #00ffcc;
-      background: #1a1a2e;
-      border: 2px solid #00ffcc;
+      color: #40c4ff;
+      background: #1e3a5f;
+      border: 2px solid #40c4ff;
       border-radius: 5px;
       width: 80%;
       margin-bottom: 20px;
       text-align: center;
+    }
+    #avatar-menu .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #avatar-menu .option {
+      padding: 10px;
+      border: 2px solid #40c4ff;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #1e3a5f;
+      color: #fff;
+      font-size: 14px;
+    }
+    #avatar-menu .option.selected {
+      background: #40c4ff;
+      color: #000;
+    }
+    #avatar-menu .preview {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      border: 2px solid #40c4ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
     }
     #joystick {
       position: fixed;
@@ -112,20 +129,20 @@
       left: 20px;
       width: 100px;
       height: 100px;
-      background: rgba(0, 255, 204, 0.3);
-      border: 2px solid #00ffcc;
+      background: rgba(64, 196, 255, 0.3);
+      border: 2px solid #40c4ff;
       border-radius: 50%;
       display: none;
-      box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+      box-shadow: 0 0 10px rgba(64, 196, 255, 0.5);
     }
     #joystick-knob {
       position: absolute;
       width: 40px;
       height: 40px;
-      background: #00ffcc;
+      background: #40c4ff;
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px #00ffcc;
+      box-shadow: 0 0 10px #40c4ff;
     }
     #skill-button {
       position: fixed;
@@ -133,8 +150,8 @@
       right: 20px;
       width: 60px;
       height: 60px;
-      background: linear-gradient(45deg, #ff4500, #cc3700);
-      border: 2px solid #00ffcc;
+      background: linear-gradient(45deg, #ff5722, #d84315);
+      border: 2px solid #40c4ff;
       border-radius: 50%;
       color: #fff;
       text-align: center;
@@ -142,17 +159,17 @@
       font-size: 12px;
       font-family: 'Press Start 2P', cursive;
       display: none;
-      box-shadow: 0 0 10px #ff4500;
+      box-shadow: 0 0 10px #ff5722;
     }
     @media (max-width: 600px) {
-      #menu, #mode-selection, #name-input, #eaten-notification {
+      #menu, #mode-selection, #name-input, #eaten-notification, #avatar-menu {
         padding: 15px;
       }
-      #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1 {
+      #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1, #avatar-menu h1 {
         font-size: 24px;
         margin-bottom: 30px;
       }
-      #menu button, #mode-selection button, #name-input button, #eaten-notification button {
+      #menu button, #mode-selection button, #name-input button, #eaten-notification button, #avatar-menu button {
         font-size: 14px;
         padding: 12px 25px;
       }
@@ -164,12 +181,10 @@
 </head>
 <body>
   <div id="menu">
-    <h1>$FURBTC NEBULA FEAST</h1>
+    <h1>$TOILET FLUSH FRENZY</h1>
     <div class="button-container">
-      <button class="play" onclick="showModeSelection()"><i class="fas fa-play"></i> Play as Guest</button>
-      <button class="locked" disabled><i class="fas fa-users"></i> PVP (P2E/LOCKED)</button>
-      <button class="locked" disabled><i class="fas fa-store"></i> Web3 Marketplace</button>
-      <button class="locked" disabled><i class="fas fa-backpack"></i> Inventory (LOCKED)</button>
+      <button class="play" onclick="showModeSelection()"><i class="fas fa-play"></i> Play</button>
+      <button class="play" onclick="showAvatarMenu()"><i class="fas fa-paint-brush"></i> Avatar</button>
     </div>
   </div>
   <div id="mode-selection" style="display: none;">
@@ -186,9 +201,29 @@
       <button class="play" onclick="startGame()"><i class="fas fa-play"></i> Start Game</button>
     </div>
   </div>
+  <div id="avatar-menu" style="display: none;">
+    <h1>CUSTOMIZE AVATAR</h1>
+    <div class="options" id="color-options">
+      <h3 style="color: #40c4ff; width: 100%;">Base Color</h3>
+      <div class="option" data-color="#F5F5F5">Porcelain White</div>
+      <div class="option" data-color="#40C4FF">Sky Blue</div>
+      <div class="option" data-color="#26A69A">Mint Green</div>
+    </div>
+    <div class="options" id="accessory-options">
+      <h3 style="color: #40c4ff; width: 100%;">Accessory</h3>
+      <div class="option" data-accessory="🪠">Plunger</div>
+      <div class="option" data-accessory="🧹">Toilet Brush</div>
+      <div class="option" data-accessory="🧻">Toilet Paper</div>
+    </div>
+    <div class="preview" id="avatar-preview"></div>
+    <div class="button-container">
+      <button class="play" onclick="saveAvatar()"><i class="fas fa-save"></i> Save Avatar</button>
+      <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+  </div>
   <div id="eaten-notification" style="display: none;">
-    <h1>GAME OVER</h1>
-    <p id="eaten-message">You have been eaten!</p>
+    <h1>FLUSHED OUT!</h1>
+    <p id="eaten-message">You have been flushed!</p>
     <div class="button-container">
       <button class="play" onclick="returnToMenu()"><i class="fas fa-home"></i> Back to Menu</button>
     </div>
@@ -196,7 +231,7 @@
   <div id="joystick">
     <div id="joystick-knob"></div>
   </div>
-  <div id="skill-button"><i class="fas fa-rocket"></i></div>
+  <div id="skill-button"><i class="fas fa-bolt"></i></div>
   <script>
     let socket;
     let gameStarted = false;
@@ -211,19 +246,27 @@
     let playerId = null;
     let isAlive = true;
 
+    // Avatar settings
+    let avatar = {
+      color: safeStorageAccess('avatarColor') || '#F5F5F5',
+      accessory: safeStorageAccess('avatarAccessory') || '🪠'
+    };
+
     // Single-player state
     let player;
     let bots = [];
-    let foods = [];
-    let bushes = [];
-    let botNames = ["Mosim", "Rober", "Ho", "Kuba", "Pelot", "Wetefec"];
+    let debris = [];
+    let pipes = [];
+    let clogZones = [];
+    let botNames = ["Clog", "Drip", "Splat", "Flush", "Gurgle", "Plumb"];
     let leaderboard = [];
-    let speedBoostActive = false;
-    let speedBoostCooldown = 0;
-    let speedBoostTimer = 0;
+    let flushBoostActive = false;
+    let flushBoostCooldown = 0;
+    let flushBoostTimer = 0;
+    let unclogTimer = 0;
 
     // Multiplayer state
-    let gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+    let gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
 
     function setup() {
       if (gameStarted) {
@@ -231,18 +274,26 @@
         let canvasHeight = window.innerHeight;
         createCanvas(canvasWidth, canvasHeight);
         if (gameMode === 'single') {
-          player = new Cell(worldWidth / 2, worldHeight / 2, 20, true);
-          player.name = playerName || 'Player';
+          player = new Plunger(worldWidth / 2, worldHeight / 2, 20, true);
+          player.name = playerName || 'Plumber';
+          player.avatar = avatar;
           for (let i = 0; i < 10; i++) {
-            let bot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+            let bot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
             bot.name = botNames[i % botNames.length] + i;
+            bot.avatar = {
+              color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
+              accessory: random(['🪠', '🧹', '🧻'])
+            };
             bots.push(bot);
           }
           for (let i = 0; i < 1000; i++) {
-            foods.push(new Food());
+            debris.push(new Debris());
           }
           for (let i = 0; i < 20; i++) {
-            bushes.push(new Bush());
+            pipes.push(new Pipe());
+          }
+          for (let i = 0; i < 5; i++) {
+            clogZones.push(new ClogZone());
           }
         }
         if (isMobile) {
@@ -254,23 +305,23 @@
     function draw() {
       if (gameStarted && isAlive) {
         if (gameMode === 'single') {
-          if (speedBoostActive) {
-            speedBoostTimer--;
-            if (speedBoostTimer <= 0) {
-              speedBoostActive = false;
-              speedBoostCooldown = 600;
+          if (flushBoostActive) {
+            flushBoostTimer--;
+            if (flushBoostTimer <= 0) {
+              flushBoostActive = false;
+              flushBoostCooldown = 600;
             }
-          } else if (speedBoostCooldown > 0) {
-            speedBoostCooldown--;
+          } else if (flushBoostCooldown > 0) {
+            flushBoostCooldown--;
           }
 
           cameraX = lerp(cameraX, player.pos.x - width / 2, 0.1);
           cameraY = lerp(cameraY, player.pos.y - height / 2, 0.1);
 
-          background(10, 10, 30);
+          background(10, 20, 50);
           push();
           translate(-cameraX, -cameraY);
-          stroke(50, 50, 80);
+          stroke(50, 80, 120);
           strokeWeight(1);
           for (let x = 0; x < worldWidth; x += 50) {
             line(x, 0, x, worldHeight);
@@ -279,67 +330,104 @@
             line(0, y, worldWidth, y);
           }
 
-          stroke(0, 255, 204);
+          stroke(64, 196, 255);
           strokeWeight(3);
           noFill();
           rect(0, 0, worldWidth, worldHeight);
 
-          for (let food of foods) {
-            food.show();
+          for (let zone of clogZones) {
+            zone.show();
+            zone.update();
           }
 
-          for (let bush of bushes) {
-            bush.show();
+          for (let d of debris) {
+            d.show();
           }
 
+          for (let pipe of pipes) {
+            pipe.show();
+          }
+
+          let inClogZone = false;
+          for (let zone of clogZones) {
+            if (p5.Vector.dist(player.pos, zone.pos) < zone.r) {
+              inClogZone = true;
+              unclogTimer++;
+              if (unclogTimer >= 600) {
+                player.r += 10;
+                clogZones.splice(clogZones.indexOf(zone), 1);
+                clogZones.push(new ClogZone());
+                unclogTimer = 0;
+              }
+              break;
+            }
+          }
+          if (!inClogZone) unclogTimer = 0;
+
+          player.inClogZone = inClogZone;
           player.update();
           player.show();
 
           for (let bot of bots) {
+            let botInClogZone = false;
+            for (let zone of clogZones) {
+              if (p5.Vector.dist(bot.pos, zone.pos) < zone.r) {
+                botInClogZone = true;
+                break;
+              }
+            }
+            bot.inClogZone = botInClogZone;
             bot.update();
             bot.show();
           }
 
-          for (let i = foods.length - 1; i >= 0; i--) {
-            if (player.eats(foods[i])) {
-              foods.splice(i, 1);
-              foods.push(new Food());
+          for (let i = debris.length - 1; i >= 0; i--) {
+            if (player.clears(debris[i])) {
+              debris.splice(i, 1);
+              debris.push(new Debris());
             }
           }
 
           for (let bot of bots) {
-            for (let i = foods.length - 1; i >= 0; i--) {
-              if (bot.eats(foods[i])) {
-                foods.splice(i, 1);
-                foods.push(new Food());
+            for (let i = debris.length - 1; i >= 0; i--) {
+              if (bot.clears(debris[i])) {
+                debris.splice(i, 1);
+                debris.push(new Debris());
               }
             }
           }
 
           for (let i = bots.length - 1; i >= 0; i--) {
-            if (player.canEat(bots[i])) {
-              player.eatCell(bots[i]);
+            if (player.canClear(bots[i])) {
+              player.clearPlunger(bots[i]);
               bots.splice(i, 1);
-              let newBot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+              let newBot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
               newBot.name = botNames[i % botNames.length] + i;
+              newBot.avatar = {
+                color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
+                accessory: random(['🪠', '🧹', '🧻'])
+              };
               bots.push(newBot);
-            } else if (bots[i].canEat(player)) {
-              // Bot eats player
+            } else if (bots[i].canClear(player)) {
               isAlive = false;
               gameStarted = false;
               document.getElementById('eaten-notification').style.display = 'block';
-              document.getElementById('eaten-message').textContent = `You were eaten by ${bots[i].name}!`;
+              document.getElementById('eaten-message').textContent = `You were flushed by ${bots[i].name}!`;
               return;
             }
           }
 
           for (let i = bots.length - 1; i >= 0; i--) {
             for (let j = bots.length - 1; j >= 0; j--) {
-              if (i !== j && bots[i].canEat(bots[j])) {
-                bots[i].eatCell(bots[j]);
+              if (i !== j && bots[i].canClear(bots[j])) {
+                bots[i].clearPlunger(bots[j]);
                 bots.splice(j, 1);
-                let newBot = new Cell(random(worldWidth), random(worldHeight), 15, false);
+                let newBot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
                 newBot.name = botNames[j % botNames.length] + j;
+                newBot.avatar = {
+                  color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
+                  accessory: random(['🪠', '🧹', '🧻'])
+                };
                 bots.push(newBot);
               }
             }
@@ -350,23 +438,24 @@
           updateLeaderboard();
           drawLeaderboard();
           drawMinimap();
-          drawSpeedBoostStatus();
+          drawFlushBoostStatus();
+          drawUnclogStatus();
 
           if (isMobile && joystick.active) {
             updateJoystick();
           }
         } else {
           if (!gameState.players[playerId] || !isAlive) {
-            return; // Skip rendering if player is not alive or not in game
+            return;
           }
 
           cameraX = lerp(cameraX, gameState.players[playerId].pos.x - width / 2, 0.1);
           cameraY = lerp(cameraY, gameState.players[playerId].pos.y - height / 2, 0.1);
 
-          background(10, 10, 30);
+          background(10, 20, 50);
           push();
           translate(-cameraX, -cameraY);
-          stroke(50, 50, 80);
+          stroke(50, 80, 120);
           strokeWeight(1);
           for (let x = 0; x < worldWidth; x += 50) {
             line(x, 0, x, worldHeight);
@@ -375,51 +464,58 @@
             line(0, y, worldWidth, y);
           }
 
-          stroke(0, 255, 204);
+          stroke(64, 196, 255);
           strokeWeight(3);
           noFill();
           rect(0, 0, worldWidth, worldHeight);
 
-          for (let food of gameState.foods) {
-            fill(255, 165, 0);
+          for (let zone of gameState.clogZones) {
+            fill(139, 69, 19, 150);
             noStroke();
-            ellipse(food.pos.x, food.pos.y, food.r * 2);
+            ellipse(zone.pos.x, zone.pos.y, zone.r * 2);
+            fill(64, 196, 255, 100);
+            ellipse(zone.pos.x, zone.pos.y, zone.r * 1.5);
           }
 
-          for (let bush of gameState.bushes) {
-            fill(0, 128, 0);
+          for (let d of gameState.debris) {
+            fill(139, 69, 19);
             noStroke();
-            ellipse(bush.pos.x, bush.pos.y, bush.r * 2);
+            ellipse(d.pos.x, d.pos.y, d.r * 2);
+          }
+
+          for (let pipe of gameState.pipes) {
+            fill(169, 169, 169);
+            noStroke();
+            ellipse(pipe.pos.x, pipe.pos.y, pipe.r * 2);
           }
 
           for (let id in gameState.players) {
             let player = gameState.players[id];
             let isHidden = false;
-            for (let bush of gameState.bushes) {
-              let d = dist(player.pos.x, player.pos.y, bush.pos.x, bush.pos.y);
-              if (d < bush.r + player.r) {
+            for (let pipe of gameState.pipes) {
+              let d = dist(player.pos.x, player.pos.y, pipe.pos.x, pipe.pos.y);
+              if (d < pipe.r + player.r) {
                 isHidden = true;
                 break;
               }
             }
-            fill(255, 165, 0, isHidden ? 100 : 255);
+            let [r, g, b] = hexToRgb(player.avatar.color);
+            fill(r, g, b, isHidden ? 100 : 255);
             noStroke();
             ellipse(player.pos.x, player.pos.y, player.r * 2);
-            if (id === playerId) {
-              for (let i = 0; i < 50; i++) {
-                let angle = random(TWO_PI);
-                let dist = random(player.r, player.r * 1.2);
-                let x = player.pos.x + cos(angle) * dist;
-                let y = player.pos.y + sin(angle) * dist;
-                fill(255, 140, 0, isHidden ? 50 : 200);
-                ellipse(x, y, 3);
-              }
-              fill(255, 245, 220, isHidden ? 100 : 255);
-              textAlign(CENTER, CENTER);
-              textSize(player.r * 1.2);
-              textStyle(BOLD);
-              text("₿", player.pos.x, player.pos.y);
+            for (let i = 0; i < 50; i++) {
+              let angle = random(TWO_PI);
+              let dist = random(player.r, player.r * 1.2);
+              let x = player.pos.x + cos(angle) * dist;
+              let y = player.pos.y + sin(angle) * dist;
+              fill(r * 0.8, g * 0.8, b * 0.8, isHidden ? 50 : 200);
+              ellipse(x, y, 3);
             }
+            fill(255, 255, 255, isHidden ? 100 : 255);
+            textAlign(CENTER, CENTER);
+            textSize(player.r * 1.2);
+            textStyle(BOLD);
+            text(player.avatar.accessory, player.pos.x, player.pos.y);
             fill(255, 255, 255, isHidden ? 100 : 255);
             textAlign(CENTER);
             textSize(12);
@@ -428,17 +524,21 @@
 
           for (let bot of gameState.bots) {
             let isHidden = false;
-            for (let bush of gameState.bushes) {
-              let d = dist(bot.pos.x, bot.pos.y, bush.pos.x, bush.pos.y);
-              if (d < bush.r + bot.r) {
+            for (let pipe of gameState.pipes) {
+              let d = dist(bot.pos.x, bot.pos.y, pipe.pos.x, pipe.pos.y);
+              if (d < pipe.r + bot.r) {
                 isHidden = true;
                 break;
               }
             }
-            fill(255, 0, 0, isHidden ? 100 : 255);
+            let [r, g, b] = hexToRgb(bot.avatar.color);
+            fill(r, g, b, isHidden ? 100 : 255);
             noStroke();
             ellipse(bot.pos.x, bot.pos.y, bot.r * 2);
             fill(255, 255, 255, isHidden ? 100 : 255);
+            textAlign(CENTER, CENTER);
+            textSize(bot.r * 1.2);
+            text(bot.avatar.accessory, bot.pos.x, bot.pos.y);
             textAlign(CENTER);
             textSize(12);
             text(bot.name, bot.pos.x, bot.pos.y - bot.r - 10);
@@ -448,7 +548,8 @@
 
           drawLeaderboard();
           drawMinimap();
-          drawSpeedBoostStatus();
+          drawFlushBoostStatus();
+          drawUnclogStatus();
 
           if (isMobile && joystick.active) {
             updateJoystick();
@@ -467,22 +568,31 @@
       }
     }
 
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '');
+      let r = parseInt(hex.substring(0, 2), 16);
+      let g = parseInt(hex.substring(2, 4), 16);
+      let b = parseInt(hex.substring(4, 6), 16);
+      return [r, g, b];
+    }
+
     function keyPressed() {
       if (keyCode === 32 && isAlive) {
-        if (gameMode === 'single' && !speedBoostActive && speedBoostCooldown <= 0) {
-          speedBoostActive = true;
-          speedBoostTimer = 180;
+        if (gameMode === 'single' && !flushBoostActive && flushBoostCooldown <= 0) {
+          flushBoostActive = true;
+          flushBoostTimer = 180;
         } else if (gameMode === 'multi' && socket) {
-          socket.emit('playerInput', { speedBoost: true });
+          socket.emit('playerInput', { flushBoost: true });
         }
       }
     }
 
     function showModeSelection() {
-      document.getElementById('menu').style.display = 'block';
+      document.getElementById('menu').style.display = 'none';
       document.getElementById('mode-selection').style.display = 'block';
       document.getElementById('name-input').style.display = 'none';
       document.getElementById('eaten-notification').style.display = 'none';
+      document.getElementById('avatar-menu').style.display = 'none';
     }
 
     function showNameInput(mode) {
@@ -492,32 +602,85 @@
       document.getElementById('player-name').focus();
     }
 
+    function showAvatarMenu() {
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('avatar-menu').style.display = 'block';
+      setupAvatarMenu();
+    }
+
+    function setupAvatarMenu() {
+      let colorOptions = document.getElementById('color-options').getElementsByClassName('option');
+      let accessoryOptions = document.getElementById('accessory-options').getElementsByClassName('option');
+      let preview = document.getElementById('avatar-preview');
+
+      for (let option of colorOptions) {
+        option.classList.remove('selected');
+        if (option.dataset.color === avatar.color) {
+          option.classList.add('selected');
+        }
+        option.onclick = () => {
+          avatar.color = option.dataset.color;
+          for (let o of colorOptions) o.classList.remove('selected');
+          option.classList.add('selected');
+          updateAvatarPreview();
+        };
+      }
+
+      for (let option of accessoryOptions) {
+        option.classList.remove('selected');
+        if (option.dataset.accessory === avatar.accessory) {
+          option.classList.add('selected');
+        }
+        option.onclick = () => {
+          avatar.accessory = option.dataset.accessory;
+          for (let o of accessoryOptions) o.classList.remove('selected');
+          option.classList.add('selected');
+          updateAvatarPreview();
+        };
+      }
+
+      updateAvatarPreview();
+    }
+
+    function updateAvatarPreview() {
+      let preview = document.getElementById('avatar-preview');
+      preview.style.backgroundColor = avatar.color;
+      preview.textContent = avatar.accessory;
+    }
+
+    function saveAvatar() {
+      safeStorageAccess('avatarColor', avatar.color);
+      safeStorageAccess('avatarAccessory', avatar.accessory);
+      location.reload(); // Refresh the page to apply saved avatar
+    }
+
     function returnToMenu() {
       gameStarted = false;
       isAlive = true;
       playerId = null;
-      gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+      gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
       const canvas = document.querySelector('canvas');
       if (canvas) {
         canvas.style.display = 'none';
       }
       document.getElementById('eaten-notification').style.display = 'none';
       document.getElementById('menu').style.display = 'block';
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('name-input').style.display = 'none';
+      document.getElementById('avatar-menu').style.display = 'none';
       if (gameMode === 'multi' && socket) {
         socket.disconnect();
         socket = null;
       }
-      remove(); // Stop p5.js canvas
-
-      location.reload();
+      remove();
+      location.reload(); // Refresh the page to apply saved avatar
     }
 
     window.startGame = function() {
       playerName = document.getElementById('player-name').value.trim();
       if (playerName.length > 12) playerName = playerName.slice(0, 12);
-      if (!playerName) playerName = 'Player';
+      if (!playerName) playerName = 'Plumber';
       document.getElementById('name-input').style.display = 'none';
-      document.getElementById('menu').style.display = 'none';
       const canvas = document.querySelector('canvas');
       if (canvas) {
         canvas.style.display = 'block';
@@ -529,21 +692,20 @@
         socket = io();
         socket.on('connect', () => {
           playerId = socket.id;
-          socket.emit('playerJoin', playerName);
+          socket.emit('playerJoin', { name: playerName, avatar });
         });
         socket.on('gameState', (state) => {
           if (isAlive && state.players[playerId]) {
             gameState = state;
           }
         });
-        socket.on('eaten', (data) => {
-          console.log('Eaten event received:', data);
+        socket.on('flushed', (data) => {
           isAlive = false;
           gameStarted = false;
           playerId = null;
-          gameState = { players: {}, bots: [], foods: [], bushes: [], leaderboard: [] };
+          gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
           document.getElementById('eaten-notification').style.display = 'block';
-          document.getElementById('eaten-message').textContent = `You were eaten by ${data.eater}!`;
+          document.getElementById('eaten-message').textContent = `You were flushed by ${data.flusher}!`;
           if (socket) {
             socket.disconnect();
             socket = null;
@@ -583,11 +745,11 @@
 
       skillButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (gameMode === 'single' && !speedBoostActive && speedBoostCooldown <= 0) {
-          speedBoostActive = true;
-          speedBoostTimer = 180;
+        if (gameMode === 'single' && !flushBoostActive && flushBoostCooldown <= 0) {
+          flushBoostActive = true;
+          flushBoostTimer = 180;
         } else if (gameMode === 'multi' && socket && isAlive) {
-          socket.emit('playerInput', { speedBoost: true });
+          socket.emit('playerInput', { flushBoost: true });
         }
       });
     }
@@ -611,10 +773,10 @@
     function drawLeaderboard() {
       push();
       fill(0, 0, 50, 200);
-      stroke(0, 255, 204);
+      stroke(64, 196, 255);
       strokeWeight(2);
       rect(10, 10, 180, 160, 10);
-      fill(0, 255, 204);
+      fill(64, 196, 255);
       textSize(14);
       textAlign(LEFT);
       textStyle(NORMAL);
@@ -635,179 +797,203 @@
     }
 
     function drawMinimap() {
-  let miniWidth = 100;
-  let miniHeight = 100;
-  let scaleX = miniWidth / worldWidth;
-  let scaleY = miniHeight / worldHeight;
+      let miniWidth = 100;
+      let miniHeight = 100;
+      let scaleX = miniWidth / worldWidth;
+      let scaleY = miniHeight / worldHeight;
+      let isMobile = windowWidth < 768;
 
-  // Detect mobile
-  let isMobile = windowWidth < 768; // You can adjust this breakpoint as needed
-
-  push();
-
-  // Position: top-right on mobile, bottom-right on desktop
-  if (isMobile) {
-    translate(width - miniWidth - 10, 10);
-  } else {
-    translate(width - miniWidth - 10, height - miniHeight - 10);
-  }
-
-  // Draw minimap box
-  fill(0, 0, 50, 200);
-  stroke(0, 255, 204);
-  strokeWeight(2);
-  rect(0, 0, miniWidth, miniHeight, 5);
-
-  // Label
-  fill(0, 255, 204);
-  textSize(10);
-  textFont('Press Start 2P');
-  textAlign(LEFT);
-  text('Map', 5, 15);
-
-  // Draw contents
-  if (gameMode === 'single') {
-    fill(0, 128, 0);
-    noStroke();
-    for (let bush of bushes) {
-      ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
-    }
-
-    fill(255, 165, 0);
-    ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
-
-    fill(255, 0, 0);
-    for (let bot of bots) {
-      ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
-    }
-
-  } else {
-    fill(0, 128, 0);
-    noStroke();
-    for (let bush of gameState.bushes) {
-      ellipse(bush.pos.x * scaleX, bush.pos.y * scaleY, bush.r * 2 * scaleX);
-    }
-
-    for (let id in gameState.players) {
-      let p = gameState.players[id];
-      fill(id === playerId ? 255 : 255, id === playerId ? 165 : 255, 0);
-      ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
-    }
-
-    fill(255, 0, 0);
-    for (let bot of gameState.bots) {
-      ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
-    }
-  }
-
-  pop();
-}
-
-function drawSpeedBoostStatus() {
-  push();
-
-  // Detect mobile
-  let isMobile = windowWidth < 768;
-
-  // Box size
-  let boxWidth = isMobile ? 50 : 110;
-  let boxHeight = isMobile ? 110 : 50;
-
-  // Position
-  let x = isMobile ? width - boxWidth - 10 : width - boxWidth - 10;
-  let y = isMobile ? height / 2 - boxHeight / 2 : 10;
-
-  // Draw container
-  fill(0, 0, 50, 200);
-  stroke(0, 255, 204);
-  strokeWeight(2);
-  rect(x, y, boxWidth, boxHeight, 10);
-
-  // Values for logic
-  let maxDuration = 180; // speed boost duration
-  let maxCooldown = 300; // cooldown duration
-  let progress = 1;
-
-  if (gameMode === 'single') {
-    if (speedBoostActive) {
-      progress = speedBoostTimer / maxDuration;
-    } else if (speedBoostCooldown > 0) {
-      progress = 1 - (speedBoostCooldown / maxCooldown);
-    } else {
-      progress = 1;
-    }
-  } else {
-    let player = gameState.players[playerId];
-    if (player) {
-      if (player.speedBoostActive) {
-        progress = player.speedBoostTimer / maxDuration;
-      } else if (player.speedBoostCooldown > 0) {
-        progress = 1 - (player.speedBoostCooldown / maxCooldown);
+      push();
+      if (isMobile) {
+        translate(width - miniWidth - 10, 10);
       } else {
-        progress = 1;
+        translate(width - miniWidth - 10, height - miniHeight - 10);
+      }
+
+      fill(0, 0, 50, 200);
+      stroke(64, 196, 255);
+      strokeWeight(2);
+      rect(0, 0, miniWidth, miniHeight, 5);
+
+      fill(64, 196, 255);
+      textSize(10);
+      textFont('Press Start 2P');
+      textAlign(LEFT);
+      text('Map', 5, 15);
+
+      if (gameMode === 'single') {
+        fill(139, 69, 19);
+        noStroke();
+        for (let zone of clogZones) {
+          ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
+        }
+        fill(169, 169, 169);
+        for (let pipe of pipes) {
+          ellipse(pipe.pos.x * scaleX, pipe.pos.y * scaleY, pipe.r * 2 * scaleX);
+        }
+        let [r, g, b] = hexToRgb(player.avatar.color);
+        fill(r, g, b);
+        ellipse(player.pos.x * scaleX, player.pos.y * scaleY, player.r * 2 * scaleX);
+        for (let bot of bots) {
+          let [br, bg, bb] = hexToRgb(bot.avatar.color);
+          fill(br, bg, bb);
+          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+        }
+      } else {
+        fill(139, 69, 19);
+        noStroke();
+        for (let zone of gameState.clogZones) {
+          ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
+        }
+        fill(169, 169, 169);
+        for (let pipe of gameState.pipes) {
+          ellipse(pipe.pos.x * scaleX, pipe.pos.y * scaleY, pipe.r * 2 * scaleX);
+        }
+        for (let id in gameState.players) {
+          let p = gameState.players[id];
+          let [r, g, b] = hexToRgb(p.avatar.color);
+          fill(r, g, b);
+          ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
+        }
+        for (let bot of gameState.bots) {
+          let [r, g, b] = hexToRgb(bot.avatar.color);
+          fill(r, g, b);
+          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+        }
+      }
+      pop();
+    }
+
+    function drawFlushBoostStatus() {
+      push();
+      let isMobile = windowWidth < 768;
+      let boxWidth = isMobile ? 50 : 110;
+      let boxHeight = isMobile ? 110 : 50;
+      let x = isMobile ? width - boxWidth - 10 : width - boxWidth - 10;
+      let y = isMobile ? height / 2 - boxHeight / 2 : 10;
+
+      fill(0, 0, 50, 200);
+      stroke(64, 196, 255);
+      strokeWeight(2);
+      rect(x, y, boxWidth, boxHeight, 10);
+
+      let maxDuration = 180;
+      let maxCooldown = 300;
+      let progress = 1;
+
+      if (gameMode === 'single') {
+        if (flushBoostActive) {
+          progress = flushBoostTimer / maxDuration;
+        } else if (flushBoostCooldown > 0) {
+          progress = 1 - (flushBoostCooldown / maxCooldown);
+        }
+      } else {
+        let player = gameState.players[playerId];
+        if (player) {
+          if (player.flushBoostActive) {
+            progress = player.flushBoostTimer / maxDuration;
+          } else if (player.flushBoostCooldown > 0) {
+            progress = 1 - (player.flushBoostCooldown / maxCooldown);
+          }
+        }
+      }
+
+      if (isMobile) {
+        let barX = x + 15;
+        let barY = y + 15;
+        let barWidth = 20;
+        let barHeight = 80;
+        noStroke();
+        fill(80);
+        rect(barX, barY, barWidth, barHeight, 5);
+        let filledHeight = barHeight * progress;
+        if (progress < 1 && progress > 0) {
+          fill(255, 87, 34);
+        } else {
+          fill(64, 196, 255);
+        }
+        rect(barX, barY + (barHeight - filledHeight), barWidth, filledHeight, 5);
+        fill(64, 196, 255);
+        textSize(10);
+        textFont('Press Start 2P');
+        textAlign(CENTER);
+        text('FLUSH', x + boxWidth / 2, y + 10);
+      } else {
+        let barX = x + 15;
+        let barY = y + 30;
+        let barWidth = 80;
+        let barHeight = 10;
+        noStroke();
+        fill(80);
+        rect(barX, barY, barWidth, barHeight, 5);
+        if (progress < 1 && progress > 0) {
+          fill(255, 87, 34);
+        } else {
+          fill(64, 196, 255);
+        }
+        rect(barX, barY, barWidth * progress, barHeight, 5);
+        fill(64, 196, 255);
+        textSize(10);
+        textFont('Press Start 2P');
+        textAlign(CENTER);
+        text('FLUSH', x + boxWidth / 2, y + 15);
+      }
+      pop();
+    }
+
+    function drawUnclogStatus() {
+      if (unclogTimer > 0) {
+        push();
+        let isMobile = windowWidth < 768;
+        let boxWidth = isMobile ? 50 : 110;
+        let boxHeight = isMobile ? 50 : 50;
+        let x = isMobile ? width - boxWidth - 10 : width - boxWidth - 10;
+        let y = isMobile ? height / 2 + 70 : 70;
+
+        fill(0, 0, 50, 200);
+        stroke(64, 196, 255);
+        strokeWeight(2);
+        rect(x, y, boxWidth, boxHeight, 10);
+
+        let maxUnclogTime = 600;
+        let progress = unclogTimer / maxUnclogTime;
+
+        if (isMobile) {
+          let barX = x + 15;
+          let barY = y + 15;
+          let barWidth = 20;
+          let barHeight = 20;
+          noStroke();
+          fill(80);
+          rect(barX, barY, barWidth, barHeight, 5);
+          fill(255, 87, 34);
+          rect(barX, barY, barWidth * progress, barHeight, 5);
+          fill(64, 196, 255);
+          textSize(10);
+          textFont('Press Start 2P');
+          textAlign(CENTER);
+          text('UNCLOG', x + boxWidth / 2, y + 10);
+        } else {
+          let barX = x + 15;
+          let barY = y + 30;
+          let barWidth = 80;
+          let barHeight = 10;
+          noStroke();
+          fill(80);
+          rect(barX, barY, barWidth, barHeight, 5);
+          fill(255, 87, 34);
+          rect(barX, barY, barWidth * progress, barHeight, 5);
+          fill(64, 196, 255);
+          textSize(10);
+          textFont('Press Start 2P');
+          textAlign(CENTER);
+          text('UNCLOG', x + boxWidth / 2, y + 15);
+        }
+        pop();
       }
     }
-  }
 
-  // Draw loader bar (horizontal for desktop, vertical for mobile)
-  if (isMobile) {
-    let barX = x + 15;
-    let barY = y + 15;
-    let barWidth = 20;
-    let barHeight = 80;
-
-    // Background bar
-    noStroke();
-    fill(80);
-    rect(barX, barY, barWidth, barHeight, 5);
-
-    // Filled bar from bottom to top
-    let filledHeight = barHeight * progress;
-    if (progress < 1 && progress > 0) {
-      fill(255, 69, 0);
-    } else {
-      fill(0, 255, 204);
-    }
-    rect(barX, barY + (barHeight - filledHeight), barWidth, filledHeight, 5);
-
-    // Icon at top
-    fill(0, 255, 204);
-    textSize(10);
-    textFont('Press Start 2P');
-    textAlign(CENTER);
-    text('BOOST', x + boxWidth / 2, y + 10);
-  } else {
-    // Desktop: horizontal loader
-    let barX = x + 15;
-    let barY = y + 30;
-    let barWidth = 80;
-    let barHeight = 10;
-
-    noStroke();
-    fill(80);
-    rect(barX, barY, barWidth, barHeight, 5);
-
-    if (progress < 1 && progress > 0) {
-      fill(255, 69, 0);
-    } else {
-      fill(0, 255, 204);
-    }
-    rect(barX, barY, barWidth * progress, barHeight, 5);
-
-    // Icon top center
-    fill(0, 255, 204);
-    textSize(10);
-    textFont('Press Start 2P');
-    textAlign(CENTER);
-    text('BOOST', x + boxWidth / 2, y + 15);
-  }
-
-  pop();
-}
-
-
-
-    class Cell {
+    class Plunger {
       constructor(x, y, r, isPlayer) {
         this.pos = createVector(x, y);
         this.r = r;
@@ -815,12 +1001,14 @@ function drawSpeedBoostStatus() {
         this.isPlayer = isPlayer;
         this.target = isPlayer ? null : createVector(random(worldWidth), random(worldHeight));
         this.name = "";
+        this.inClogZone = false;
+        this.avatar = isPlayer ? avatar : { color: '#F5F5F5', accessory: '🪠' };
       }
 
       update() {
-        let speedMultiplier = 1;
-        if (this.isPlayer && speedBoostActive) {
-          speedMultiplier = 3.8;
+        let speedMultiplier = this.inClogZone ? 0.5 : 1;
+        if (this.isPlayer && flushBoostActive) {
+          speedMultiplier *= 3.8;
         }
         if (this.isPlayer) {
           let dir;
@@ -833,14 +1021,14 @@ function drawSpeedBoostStatus() {
           dir.setMag(3.6 * speedMultiplier / sqrt(this.r));
           this.vel.lerp(dir, 0.1);
         } else {
-          let nearest = this.findNearestFood();
+          let nearest = this.findNearestDebris();
           if (nearest && p5.Vector.dist(this.pos, nearest.pos) < 200) {
             this.target = nearest.pos;
           } else if (p5.Vector.dist(this.pos, this.target) < 50) {
             this.target = createVector(random(worldWidth), random(worldHeight));
           }
           let dir = p5.Vector.sub(this.target, this.pos);
-          dir.setMag(2 / sqrt(this.r));
+          dir.setMag(2 * speedMultiplier / sqrt(this.r));
           this.vel.lerp(dir, 0.05);
         }
         this.pos.add(this.vel);
@@ -848,14 +1036,14 @@ function drawSpeedBoostStatus() {
         this.pos.y = constrain(this.pos.y, this.r, worldHeight - this.r);
       }
 
-      findNearestFood() {
+      findNearestDebris() {
         let nearest = null;
         let minDist = Infinity;
-        for (let food of foods) {
-          let d = p5.Vector.dist(this.pos, food.pos);
-          if (d < minDist) {
-            minDist = d;
-            nearest = food;
+        for (let d of debris) {
+          let dist = p5.Vector.dist(this.pos, d.pos);
+          if (dist < minDist) {
+            minDist = dist;
+            nearest = d;
           }
         }
         return nearest;
@@ -863,94 +1051,112 @@ function drawSpeedBoostStatus() {
 
       show() {
         let isHidden = false;
-        for (let bush of bushes) {
-          if (p5.Vector.dist(this.pos, bush.pos) < bush.r + this.r) {
+        for (let pipe of pipes) {
+          if (p5.Vector.dist(this.pos, pipe.pos) < pipe.r + this.r) {
             isHidden = true;
             break;
           }
         }
         push();
+        let [r, g, b] = hexToRgb(this.avatar.color);
+        fill(r, g, b, isHidden ? 100 : 255);
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r * 2);
         if (this.isPlayer) {
-          fill(255, 165, 0, isHidden ? 100 : 255);
-          noStroke();
-          ellipse(this.pos.x, this.pos.y, this.r * 2);
           for (let i = 0; i < 50; i++) {
             let angle = random(TWO_PI);
             let dist = random(this.r, this.r * 1.2);
             let x = this.pos.x + cos(angle) * dist;
             let y = this.pos.y + sin(angle) * dist;
-            fill(255, 140, 0, isHidden ? 50 : 200);
+            fill(r * 0.8, g * 0.8, b * 0.8, isHidden ? 50 : 200);
             ellipse(x, y, 3);
           }
-          fill(255, 245, 220, isHidden ? 100 : 255);
-          textAlign(CENTER, CENTER);
-          textSize(this.r * 1.2);
-          textStyle(BOLD);
-          text("₿", this.pos.x, this.pos.y);
-          fill(255, 255, 255, isHidden ? 100 : 255);
-          textAlign(CENTER);
-          textSize(12);
-          text(this.name, this.pos.x, this.pos.y - this.r - 10);
-        } else {
-          fill(255, 0, 0, isHidden ? 100 : 255);
-          noStroke();
-          ellipse(this.pos.x, this.pos.y, this.r * 2);
-          fill(255, 255, 255, isHidden ? 100 : 255);
-          textAlign(CENTER);
-          textSize(12);
-          text(this.name, this.pos.x, this.pos.y - this.r - 10);
         }
+        fill(255, 255, 255, isHidden ? 100 : 255);
+        textAlign(CENTER, CENTER);
+        textSize(this.r * 1.2);
+        textStyle(BOLD);
+        text(this.avatar.accessory, this.pos.x, this.pos.y);
+        fill(255, 255, 255, isHidden ? 100 : 255);
+        textAlign(CENTER);
+        textSize(12);
+        text(this.name, this.pos.x, this.pos.y - this.r - 10);
         pop();
       }
 
-      eats(food) {
-        let d = p5.Vector.dist(this.pos, food.pos);
-        if (d < this.r + food.r) {
-          let area = PI * this.r * this.r + PI * food.r * food.r;
+      clears(debris) {
+        let d = p5.Vector.dist(this.pos, debris.pos);
+        if (d < this.r + debris.r) {
+          let area = PI * this.r * this.r + PI * debris.r * debris.r;
           this.r = sqrt(area / PI);
           return true;
         }
         return false;
       }
 
-      canEat(other) {
+      canClear(other) {
         let d = p5.Vector.dist(this.pos, other.pos);
         return this.r > other.r * 1.1 && d < this.r + other.r;
       }
 
-      eatCell(other) {
+      clearPlunger(other) {
         let area = PI * this.r * this.r + PI * other.r * other.r;
         this.r = sqrt(area / PI);
       }
     }
 
-    class Food {
-      constructor() {
-        this.pos = createVector(random(worldWidth), random(worldHeight));
+    class Debris {
+      constructor(x, y) {
+        this.pos = createVector(x || random(worldWidth), y || random(worldHeight));
         this.r = 5;
       }
 
       show() {
-        fill(255, 165, 0);
+        fill(139, 69, 19);
         noStroke();
         ellipse(this.pos.x, this.pos.y, this.r * 2);
       }
     }
 
-    class Bush {
+    class Pipe {
       constructor() {
         this.pos = createVector(random(worldWidth), random(worldHeight));
         this.r = 30;
       }
 
       show() {
-        fill(0, 128, 0);
+        fill(169, 169, 169);
         noStroke();
         ellipse(this.pos.x, this.pos.y, this.r * 2);
       }
     }
 
-    // Fallback for storage access
+    class ClogZone {
+      constructor() {
+        this.pos = createVector(random(worldWidth), random(worldHeight));
+        this.r = 100;
+        this.spawnTimer = 0;
+      }
+
+      update() {
+        this.spawnTimer++;
+        if (this.spawnTimer >= 60) {
+          debris.push(new Debris(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
+          this.spawnTimer = 0;
+        }
+      }
+
+      show() {
+        push();
+        fill(139, 69, 19, 150);
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r * 2);
+        fill(64, 196, 255, 100);
+        ellipse(this.pos.x, this.pos.y, this.r * 1.5);
+        pop();
+      }
+    }
+
     function safeStorageAccess(key, value) {
       try {
         if (value !== undefined) {
