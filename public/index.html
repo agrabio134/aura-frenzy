@@ -132,20 +132,21 @@
     }
     #joystick {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 100px;
-      height: 100px;
-      background: rgba(123, 104, 238, 0.3);
+      bottom: 30px;
+      left: 15px;
+      width: 80px;
+      height: 80px;
+      background: rgba(123, 104, 238, 0.4);
       border: 2px solid #7b68ee;
       border-radius: 50%;
       display: none;
       box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
+      touch-action: none;
     }
     #joystick-knob {
       position: absolute;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       background: #7b68ee;
       border-radius: 50%;
       transform: translate(-50%, -50%);
@@ -153,17 +154,17 @@
     }
     #skill-button, #lock-button {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
+      bottom: 30px;
+      right: 15px;
+      width: 50px;
+      height: 50px;
       background: linear-gradient(45deg, #ff4500, #d83b01);
       border: 2px solid #7b68ee;
       border-radius: 50%;
       color: #fff;
       text-align: center;
-      line-height: 60px;
-      font-size: 12px;
+      line-height: 50px;
+      font-size: 10px;
       font-family: 'Press Start 2P', cursive;
       display: none;
       box-shadow: 0 0 10px #ff4500;
@@ -203,9 +204,9 @@
     <h1>SELECT MODE</h1>
     <div class="button-container">
       <button class="play" onclick="showNameInput('single')"><i class="fas fa-user"></i> Single Player</button>
-<button class="play" disabled title="Multiplayer is locked" style="opacity: 0.6; cursor: not-allowed;">
-  <i class="fas fa-lock"></i> Multiplayer Locked
-</button>
+      <button class="play" disabled title="Multiplayer is locked" style="opacity: 0.6; cursor: not-allowed;">
+        <i class="fas fa-lock"></i> Multiplayer Locked
+      </button>
     </div>
   </div>
   <div id="name-input" style="display: none;">
@@ -260,7 +261,7 @@
     let cameraX = 0;
     let cameraY = 0;
     let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    let joystick = { active: false, x: 0, y: 0, baseX: 70, baseY: window.innerHeight - 70 };
+    let joystick = { active: false, x: 0, y: 0, baseX: 50, baseY: window.innerHeight - 50 };
     let playerId = null;
     let isAlive = true;
     let cameraLocked = false;
@@ -887,19 +888,25 @@
       joystickDiv.addEventListener('touchstart', (e) => {
         e.preventDefault();
         joystick.active = true;
+        let touch = e.touches[0];
+        let rect = joystickDiv.getBoundingClientRect();
+        joystick.baseX = touch.clientX - rect.width / 2;
+        joystick.baseY = touch.clientY - rect.height / 2;
+        joystickDiv.style.left = joystick.baseX + 'px';
+        joystickDiv.style.top = joystick.baseY + 'px';
       });
 
       joystickDiv.addEventListener('touchmove', (e) => {
         e.preventDefault();
         let touch = e.touches[0];
         let rect = joystickDiv.getBoundingClientRect();
-        joystick.x = touch.clientX - rect.left - 50;
-        joystick.y = touch.clientY - rect.top - 50;
+        joystick.x = touch.clientX - rect.left - rect.width / 2;
+        joystick.y = touch.clientY - rect.top - rect.height / 2;
         let dist = sqrt(joystick.x * joystick.x + joystick.y * joystick.y);
-        if (dist > 30) {
+        if (dist > 25) {
           let angle = atan2(joystick.y, joystick.x);
-          joystick.x = 30 * cos(angle);
-          joystick.y = 30 * sin(angle);
+          joystick.x = 25 * cos(angle);
+          joystick.y = 25 * sin(angle);
         }
       });
 
@@ -907,6 +914,7 @@
         joystick.active = false;
         joystick.x = 0;
         joystick.y = 0;
+        updateJoystick();
       });
 
       skillButton.addEventListener('touchstart', (e) => {
@@ -928,8 +936,8 @@
 
     function updateJoystick() {
       let knob = document.getElementById('joystick-knob');
-      knob.style.left = (50 + joystick.x) + 'px';
-      knob.style.top = (50 + joystick.y) + 'px';
+      knob.style.left = (40 + joystick.x) + 'px';
+      knob.style.top = (40 + joystick.y) + 'px';
     }
 
     function updateLeaderboard() {
@@ -946,25 +954,28 @@
 
     function drawLeaderboard() {
       push();
+      let isMobile = windowWidth < 600;
+      let boxWidth = isMobile ? 150 : 200;
+      let boxHeight = isMobile ? 150 : 260;
       fill(0, 0, 50, 200);
       stroke(123, 104, 238);
       strokeWeight(2);
-      rect(10, 10, 200, 260, 10);
+      rect(10, 10, boxWidth, boxHeight, 10);
       fill(123, 104, 238);
-      textSize(14);
+      textSize(isMobile ? 10 : 14);
       textAlign(LEFT);
       textStyle(NORMAL);
       textFont('Press Start 2P');
-      text('AURA Leaderboard', 20, 35);
+      text('AURA Leaderboard', 20, isMobile ? 25 : 35);
       fill(255);
-      textSize(12);
+      textSize(isMobile ? 8 : 12);
       if (gameMode === 'single') {
         for (let i = 0; i < leaderboard.length; i++) {
-          text(`${i + 1}. ${leaderboard[i].name}: ${leaderboard[i].size}`, 20, 60 + i * 20);
+          text(`${i + 1}. ${leaderboard[i].name}: ${leaderboard[i].size}`, 20, (isMobile ? 45 : 60) + i * (isMobile ? 12 : 20));
         }
       } else if (Array.isArray(gameState.leaderboard)) {
         for (let i = 0; i < gameState.leaderboard.length; i++) {
-          text(`${i + 1}. ${gameState.leaderboard[i].name}: ${gameState.leaderboard[i].size}`, 20, 60 + i * 20);
+          text(`${i + 1}. ${gameState.leaderboard[i].name}: ${gameState.leaderboard[i].size}`, 20, (isMobile ? 45 : 60) + i * (isMobile ? 12 : 20));
         }
       }
       pop();
@@ -1206,7 +1217,7 @@
         if (this.isPlayer) {
           let dir;
           if (isMobile && joystick.active) {
-            dir = createVector(joystick.x * 5, joystick.y * 5);
+            dir = createVector(joystick.x * 6, joystick.y * 6);
           } else if (!cameraLocked) {
             let mouse = createVector(mouseX + cameraX, mouseY + cameraY);
             dir = p5.Vector.sub(mouse, this.pos);
