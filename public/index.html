@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>$TOILET Flush Frenzy</title>
-  <link rel="icon" type="image/png" href="plungers.jpg">
+  <title>$AURA Frenzy</title>
+  <link rel="icon" type="image/png" href="aura.jpg">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: radial-gradient(circle, #1e3a5f, #0f1f3f);
+      background: radial-gradient(circle, #2a1a5e, #0d0b2f);
       overflow: hidden;
       font-family: 'Press Start 2P', cursive;
     }
@@ -25,13 +25,13 @@
       width: 100vw !important;
       height: 100vh !important;
     }
-    #menu, #mode-selection, #name-input, #eaten-notification, #avatar-menu {
+    #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace {
       text-align: center;
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
-      border: 3px solid #40c4ff;
+      border: 3px solid #7b68ee;
       border-radius: 15px;
-      box-shadow: 0 0 20px rgba(64, 196, 255, 0.5);
+      box-shadow: 0 0 20px rgba(123, 104, 238, 0.5);
       max-width: 500px;
       width: 90%;
       position: absolute;
@@ -39,29 +39,29 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
-    #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1, #avatar-menu h1 {
+    #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1 {
       font-size: 32px;
-      color: #40c4ff;
-      text-shadow: 0 0 10px #40c4ff, 0 0 20px #40c4ff;
+      color: #7b68ee;
+      text-shadow: 0 0 10px #7b68ee, 0 0 20px #7b68ee;
       margin-bottom: 40px;
       letter-spacing: 2px;
     }
-    #eaten-notification p {
+    #nft-marketplace p {
       color: #fff;
       font-size: 16px;
       margin-bottom: 20px;
     }
-    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #eaten-notification .button-container, #avatar-menu .button-container {
+    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #avatar-menu .button-container, #nft-marketplace .button-container {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    #menu button, #mode-selection button, #name-input button, #eaten-notification button, #avatar-menu button {
+    #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button {
       padding: 15px 30px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
       color: #fff;
-      border: 2px solid #40c4ff;
+      border: 2px solid #7b68ee;
       border-radius: 10px;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -72,21 +72,25 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    #menu button.play, #mode-selection button.play, #name-input button.play, #eaten-notification button.play, #avatar-menu button.play {
-      background: linear-gradient(45deg, #40c4ff, #0288d1);
+    #menu button.play, #mode-selection button.play, #name-input button.play, #avatar-menu button.play, #nft-marketplace button.play {
+      background: linear-gradient(45deg, #7b68ee, #483d8b);
     }
-    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #eaten-notification button.play:hover, #avatar-menu button.play:hover {
-      background: linear-gradient(45deg, #29b6f6, #0277bd);
-      box-shadow: 0 0 15px #40c4ff;
+    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #avatar-menu button.play:hover, #nft-marketplace button.play:hover {
+      background: linear-gradient(45deg, #6a5acd, #3c2f6b);
+      box-shadow: 0 0 15px #7b68ee;
       transform: scale(1.05);
+    }
+    #menu button:disabled, #mode-selection button:disabled, #name-input button:disabled, #avatar-menu button:disabled, #nft-marketplace button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
     #name-input input {
       padding: 10px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
-      color: #40c4ff;
-      background: #1e3a5f;
-      border: 2px solid #40c4ff;
+      color: #7b68ee;
+      background: #2a1a5e;
+      border: 2px solid #7b68ee;
       border-radius: 5px;
       width: 80%;
       margin-bottom: 20px;
@@ -101,27 +105,30 @@
     }
     #avatar-menu .option {
       padding: 10px;
-      border: 2px solid #40c4ff;
+      border: 2px solid #7b68ee;
       border-radius: 5px;
       cursor: pointer;
-      background: #1e3a5f;
+      background: #2a1a5e;
       color: #fff;
       font-size: 14px;
     }
     #avatar-menu .option.selected {
-      background: #40c4ff;
+      background: #7b68ee;
       color: #000;
     }
     #avatar-menu .preview {
       width: 100px;
       height: 100px;
       margin: 20px auto;
-      border: 2px solid #40c4ff;
+      border: 2px solid #7b68ee;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 40px;
+      background-image: url('aura.jpg');
+      background-size: cover;
+      background-position: center;
     }
     #joystick {
       position: fixed;
@@ -129,29 +136,29 @@
       left: 20px;
       width: 100px;
       height: 100px;
-      background: rgba(64, 196, 255, 0.3);
-      border: 2px solid #40c4ff;
+      background: rgba(123, 104, 238, 0.3);
+      border: 2px solid #7b68ee;
       border-radius: 50%;
       display: none;
-      box-shadow: 0 0 10px rgba(64, 196, 255, 0.5);
+      box-shadow: 0 0 10px rgba(123, 104, 238, 0.5);
     }
     #joystick-knob {
       position: absolute;
       width: 40px;
       height: 40px;
-      background: #40c4ff;
+      background: #7b68ee;
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px #40c4ff;
+      box-shadow: 0 0 10px #7b68ee;
     }
-    #skill-button {
+    #skill-button, #lock-button {
       position: fixed;
       bottom: 20px;
       right: 20px;
       width: 60px;
       height: 60px;
-      background: linear-gradient(45deg, #ff5722, #d84315);
-      border: 2px solid #40c4ff;
+      background: linear-gradient(45deg, #ff4500, #d83b01);
+      border: 2px solid #7b68ee;
       border-radius: 50%;
       color: #fff;
       text-align: center;
@@ -159,21 +166,24 @@
       font-size: 12px;
       font-family: 'Press Start 2P', cursive;
       display: none;
-      box-shadow: 0 0 10px #ff5722;
+      box-shadow: 0 0 10px #ff4500;
+    }
+    #lock-button {
+      bottom: 90px;
     }
     @media (max-width: 600px) {
-      #menu, #mode-selection, #name-input, #eaten-notification, #avatar-menu {
+      #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace {
         padding: 15px;
       }
-      #menu h1, #mode-selection h1, #name-input h1, #eaten-notification h1, #avatar-menu h1 {
+      #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1 {
         font-size: 24px;
         margin-bottom: 30px;
       }
-      #menu button, #mode-selection button, #name-input button, #eaten-notification button, #avatar-menu button {
+      #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button {
         font-size: 14px;
         padding: 12px 25px;
       }
-      #joystick, #skill-button {
+      #joystick, #skill-button, #lock-button {
         display: block;
       }
     }
@@ -181,17 +191,21 @@
 </head>
 <body>
   <div id="menu">
-    <h1>$TOILET FLUSH FRENZY</h1>
+    <h1>$AURA FRENZY</h1>
     <div class="button-container">
       <button class="play" onclick="showModeSelection()"><i class="fas fa-play"></i> Play</button>
       <button class="play" onclick="showAvatarMenu()"><i class="fas fa-paint-brush"></i> Avatar</button>
+      <button class="play" onclick="showNFTMarketplace()"><i class="fas fa-shopping-cart"></i> NFT Marketplace</button>
+      <button class="play" onclick="showLeaderboard()"><i class="fas fa-trophy"></i> AURA Leaderboard</button>
     </div>
   </div>
   <div id="mode-selection" style="display: none;">
     <h1>SELECT MODE</h1>
     <div class="button-container">
       <button class="play" onclick="showNameInput('single')"><i class="fas fa-user"></i> Single Player</button>
-      <button class="play" onclick="showNameInput('multi')"><i class="fas fa-users"></i> Multiplayer</button>
+<button class="play" disabled title="Multiplayer is locked" style="opacity: 0.6; cursor: not-allowed;">
+  <i class="fas fa-lock"></i> Multiplayer Locked
+</button>
     </div>
   </div>
   <div id="name-input" style="display: none;">
@@ -204,16 +218,16 @@
   <div id="avatar-menu" style="display: none;">
     <h1>CUSTOMIZE AVATAR</h1>
     <div class="options" id="color-options">
-      <h3 style="color: #40c4ff; width: 100%;">Base Color</h3>
-      <div class="option" data-color="#F5F5F5">Porcelain White</div>
-      <div class="option" data-color="#40C4FF">Sky Blue</div>
-      <div class="option" data-color="#26A69A">Mint Green</div>
+      <h3 style="color: #7b68ee; width: 100%;">Aura Color</h3>
+      <div class="option" data-color="#E6E6FA">Cosmic Lavender</div>
+      <div class="option" data-color="#7B68EE">Nebula Purple</div>
+      <div class="option" data-color="#00CED1">Stellar Cyan</div>
     </div>
     <div class="options" id="accessory-options">
-      <h3 style="color: #40c4ff; width: 100%;">Accessory</h3>
-      <div class="option" data-accessory="🪠">Plunger</div>
-      <div class="option" data-accessory="🧹">Toilet Brush</div>
-      <div class="option" data-accessory="🧻">Toilet Paper</div>
+      <h3 style="color: #7b68ee; width: 100%;">Aura Symbol</h3>
+      <div class="option" data-accessory="✨">Cosmic Spark</div>
+      <div class="option" data-accessory="🌌">Nebula Swirl</div>
+      <div class="option" data-accessory="🔮">Mystic Rune</div>
     </div>
     <div class="preview" id="avatar-preview"></div>
     <div class="button-container">
@@ -221,17 +235,21 @@
       <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back</button>
     </div>
   </div>
-  <div id="eaten-notification" style="display: none;">
-    <h1>FLUSHED OUT!</h1>
-    <p id="eaten-message">You have been flushed!</p>
+  <div id="nft-marketplace" style="display: none;">
+    <h1>NFT MARKETPLACE</h1>
+    <p style="color: #fff !important;">Explore and purchase unique Aura NFTs!</p>
     <div class="button-container">
-      <button class="play" onclick="returnToMenu()"><i class="fas fa-home"></i> Back to Menu</button>
+      <button class="play" disabled title="Marketplace is locked" style="opacity: 0.6; cursor: not-allowed;">
+        <i class="fas fa-lock"></i> Marketplace Locked
+      </button>
+      <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back</button>
     </div>
   </div>
   <div id="joystick">
     <div id="joystick-knob"></div>
   </div>
-  <div id="skill-button"><i class="fas fa-bolt"></i></div>
+  <div id="skill-button"><i class="fas fa-bolt"></i> Surge</div>
+  <div id="lock-button"><i class="fas fa-lock"></i> Lock</div>
   <script>
     let socket;
     let gameStarted = false;
@@ -245,28 +263,30 @@
     let joystick = { active: false, x: 0, y: 0, baseX: 70, baseY: window.innerHeight - 70 };
     let playerId = null;
     let isAlive = true;
+    let cameraLocked = false;
 
     // Avatar settings
     let avatar = {
-      color: safeStorageAccess('avatarColor') || '#F5F5F5',
-      accessory: safeStorageAccess('avatarAccessory') || '🪠'
+      color: safeStorageAccess('avatarColor') || '#E6E6FA',
+      accessory: safeStorageAccess('avatarAccessory') || '✨'
     };
 
     // Single-player state
     let player;
     let bots = [];
-    let debris = [];
-    let pipes = [];
-    let clogZones = [];
-    let botNames = ["Clog", "Drip", "Splat", "Flush", "Gurgle", "Plumb"];
+    let stardust = [];
+    let foods = [];
+    let vortexes = [];
+    let nebulaZones = [];
+    let botNames = ["Star", "Nebula", "Pulse", "Glow", "Cosmo", "Flare"];
     let leaderboard = [];
-    let flushBoostActive = false;
-    let flushBoostCooldown = 0;
-    let flushBoostTimer = 0;
-    let unclogTimer = 0;
+    let surgeActive = false;
+    let surgeCooldown = 0;
+    let surgeTimer = 0;
+    let absorbTimer = 0;
 
     // Multiplayer state
-    let gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
+    let gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
 
     function setup() {
       if (gameStarted) {
@@ -274,26 +294,65 @@
         let canvasHeight = window.innerHeight;
         createCanvas(canvasWidth, canvasHeight);
         if (gameMode === 'single') {
-          player = new Plunger(worldWidth / 2, worldHeight / 2, 20, true);
-          player.name = playerName || 'Plumber';
+          player = new AuraOrb(worldWidth / 2, worldHeight / 2, 10, true);
+          player.name = playerName || 'Starfarer';
           player.avatar = avatar;
           for (let i = 0; i < 10; i++) {
-            let bot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
+            let bot = new AuraOrb(random(worldWidth), random(worldHeight), 10, false);
             bot.name = botNames[i % botNames.length] + i;
             bot.avatar = {
-              color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
-              accessory: random(['🪠', '🧹', '🧻'])
+              color: random(['#E6E6FA', '#7B68EE', '#00CED1']),
+              accessory: random(['✨', '🌌', '🔮'])
             };
             bots.push(bot);
           }
           for (let i = 0; i < 1000; i++) {
-            debris.push(new Debris());
+            stardust.push(new Stardust());
+            foods.push(new Food());
           }
           for (let i = 0; i < 20; i++) {
-            pipes.push(new Pipe());
+            vortexes.push(new Vortex());
           }
           for (let i = 0; i < 5; i++) {
-            clogZones.push(new ClogZone());
+            nebulaZones.push(new NebulaZone());
+          }
+        } else if (gameMode === 'multi') {
+          if (!Array.isArray(gameState.nebulaZones)) {
+            gameState.nebulaZones = [];
+            for (let i = 0; i < 5; i++) {
+              gameState.nebulaZones.push(new NebulaZone());
+            }
+          }
+          if (!Array.isArray(gameState.stardust)) {
+            gameState.stardust = [];
+            for (let i = 0; i < 1000; i++) {
+              gameState.stardust.push(new Stardust());
+            }
+          }
+          if (!Array.isArray(gameState.foods)) {
+            gameState.foods = [];
+            for (let i = 0; i < 1000; i++) {
+              gameState.foods.push(new Food());
+            }
+            console.log('Initialized fallback foods:', gameState.foods.length);
+          }
+          if (!Array.isArray(gameState.vortexes)) {
+            gameState.vortexes = [];
+            for (let i = 0; i < 20; i++) {
+              gameState.vortexes.push(new Vortex());
+            }
+          }
+          if (!Array.isArray(gameState.bots)) {
+            gameState.bots = [];
+            for (let i = 0; i < 10; i++) {
+              let bot = new AuraOrb(random(worldWidth), random(worldHeight), 10, false);
+              bot.name = botNames[i % botNames.length] + i;
+              bot.avatar = {
+                color: random(['#E6E6FA', '#7B68EE', '#00CED1']),
+                accessory: random(['✨', '🌌', '🔮'])
+              };
+              gameState.bots.push(bot);
+            }
           }
         }
         if (isMobile) {
@@ -305,23 +364,28 @@
     function draw() {
       if (gameStarted && isAlive) {
         if (gameMode === 'single') {
-          if (flushBoostActive) {
-            flushBoostTimer--;
-            if (flushBoostTimer <= 0) {
-              flushBoostActive = false;
-              flushBoostCooldown = 600;
+          if (surgeActive) {
+            surgeTimer--;
+            if (surgeTimer <= 0) {
+              surgeActive = false;
+              surgeCooldown = 600;
             }
-          } else if (flushBoostCooldown > 0) {
-            flushBoostCooldown--;
+          } else if (surgeCooldown > 0) {
+            surgeCooldown--;
           }
 
-          cameraX = lerp(cameraX, player.pos.x - width / 2, 0.1);
-          cameraY = lerp(cameraY, player.pos.y - height / 2, 0.1);
+          if (!cameraLocked) {
+            cameraX = lerp(cameraX, player.pos.x - width / 2, 0.1);
+            cameraY = lerp(cameraY, player.pos.y - height / 2, 0.1);
+          } else {
+            cameraX = player.pos.x - width / 2;
+            cameraY = player.pos.y - height / 2;
+          }
 
-          background(10, 20, 50);
+          background(10, 15, 50);
           push();
           translate(-cameraX, -cameraY);
-          stroke(50, 80, 120);
+          stroke(50, 60, 120);
           strokeWeight(1);
           for (let x = 0; x < worldWidth; x += 50) {
             line(x, 0, x, worldHeight);
@@ -330,89 +394,110 @@
             line(0, y, worldWidth, y);
           }
 
-          stroke(64, 196, 255);
+          stroke(123, 104, 238);
           strokeWeight(3);
           noFill();
           rect(0, 0, worldWidth, worldHeight);
 
-          for (let zone of clogZones) {
+          for (let zone of nebulaZones) {
             zone.show();
             zone.update();
           }
 
-          for (let d of debris) {
+          for (let d of stardust) {
             d.show();
           }
 
-          for (let pipe of pipes) {
-            pipe.show();
+          for (let f of foods) {
+            f.show();
           }
 
-          let inClogZone = false;
-          for (let zone of clogZones) {
+          for (let vortex of vortexes) {
+            vortex.show();
+          }
+
+          let inNebulaZone = false;
+          for (let zone of nebulaZones) {
             if (p5.Vector.dist(player.pos, zone.pos) < zone.r) {
-              inClogZone = true;
-              unclogTimer++;
-              if (unclogTimer >= 600) {
+              inNebulaZone = true;
+              absorbTimer++;
+              if (absorbTimer >= 600) {
                 player.r += 10;
-                clogZones.splice(clogZones.indexOf(zone), 1);
-                clogZones.push(new ClogZone());
-                unclogTimer = 0;
+                nebulaZones.splice(nebulaZones.indexOf(zone), 1);
+                nebulaZones.push(new NebulaZone());
+                absorbTimer = 0;
               }
               break;
             }
           }
-          if (!inClogZone) unclogTimer = 0;
+          if (!inNebulaZone) absorbTimer = 0;
 
-          player.inClogZone = inClogZone;
+          player.inNebulaZone = inNebulaZone;
           player.update();
           player.show();
 
           for (let bot of bots) {
-            let botInClogZone = false;
-            for (let zone of clogZones) {
+            let botInNebulaZone = false;
+            for (let zone of nebulaZones) {
               if (p5.Vector.dist(bot.pos, zone.pos) < zone.r) {
-                botInClogZone = true;
+                botInNebulaZone = true;
                 break;
               }
             }
-            bot.inClogZone = botInClogZone;
+            bot.inNebulaZone = botInNebulaZone;
             bot.update();
             bot.show();
           }
 
-          for (let i = debris.length - 1; i >= 0; i--) {
-            if (player.clears(debris[i])) {
-              debris.splice(i, 1);
-              debris.push(new Debris());
+          for (let i = stardust.length - 1; i >= 0; i--) {
+            if (player.clears(stardust[i])) {
+              stardust.splice(i, 1);
+              stardust.push(new Stardust());
+            }
+          }
+
+          for (let i = foods.length - 1; i >= 0; i--) {
+            if (player.clearsFood(foods[i])) {
+              foods.splice(i, 1);
+              foods.push(new Food());
             }
           }
 
           for (let bot of bots) {
-            for (let i = debris.length - 1; i >= 0; i--) {
-              if (bot.clears(debris[i])) {
-                debris.splice(i, 1);
-                debris.push(new Debris());
+            for (let i = stardust.length - 1; i >= 0; i--) {
+              if (bot.clears(stardust[i])) {
+                stardust.splice(i, 1);
+                stardust.push(new Stardust());
+              }
+            }
+            for (let i = foods.length - 1; i >= 0; i--) {
+              if (bot.clearsFood(foods[i])) {
+                foods.splice(i, 1);
+                foods.push(new Food());
               }
             }
           }
 
           for (let i = bots.length - 1; i >= 0; i--) {
             if (player.canClear(bots[i])) {
-              player.clearPlunger(bots[i]);
+              player.clearAuraOrb(bots[i]);
               bots.splice(i, 1);
-              let newBot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
+              let newBot = new AuraOrb(random(worldWidth), random(worldHeight), 10, false);
               newBot.name = botNames[i % botNames.length] + i;
               newBot.avatar = {
-                color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
-                accessory: random(['🪠', '🧹', '🧻'])
+                color: random(['#E6E6FA', '#7B68EE', '#00CED1']),
+                accessory: random(['✨', '🌌', '🔮'])
               };
               bots.push(newBot);
             } else if (bots[i].canClear(player)) {
               isAlive = false;
               gameStarted = false;
-              document.getElementById('eaten-notification').style.display = 'block';
-              document.getElementById('eaten-message').textContent = `You were flushed by ${bots[i].name}!`;
+              if (socket) {
+                socket.disconnect();
+                socket = null;
+              }
+              remove();
+              location.reload();
               return;
             }
           }
@@ -420,13 +505,13 @@
           for (let i = bots.length - 1; i >= 0; i--) {
             for (let j = bots.length - 1; j >= 0; j--) {
               if (i !== j && bots[i].canClear(bots[j])) {
-                bots[i].clearPlunger(bots[j]);
+                bots[i].clearAuraOrb(bots[j]);
                 bots.splice(j, 1);
-                let newBot = new Plunger(random(worldWidth), random(worldHeight), 15, false);
+                let newBot = new AuraOrb(random(worldWidth), random(worldHeight), 10, false);
                 newBot.name = botNames[j % botNames.length] + j;
                 newBot.avatar = {
-                  color: random(['#F5F5F5', '#40C4FF', '#26A69A']),
-                  accessory: random(['🪠', '🧹', '🧻'])
+                  color: random(['#E6E6FA', '#7B68EE', '#00CED1']),
+                  accessory: random(['✨', '🌌', '🔮'])
                 };
                 bots.push(newBot);
               }
@@ -438,24 +523,25 @@
           updateLeaderboard();
           drawLeaderboard();
           drawMinimap();
-          drawFlushBoostStatus();
-          drawUnclogStatus();
-
-          if (isMobile && joystick.active) {
-            updateJoystick();
-          }
+          drawSurgeStatus();
+          drawAbsorbStatus();
         } else {
           if (!gameState.players[playerId] || !isAlive) {
             return;
           }
 
-          cameraX = lerp(cameraX, gameState.players[playerId].pos.x - width / 2, 0.1);
-          cameraY = lerp(cameraY, gameState.players[playerId].pos.y - height / 2, 0.1);
+          if (!cameraLocked) {
+            cameraX = lerp(cameraX, gameState.players[playerId].pos.x - width / 2, 0.1);
+            cameraY = lerp(cameraY, gameState.players[playerId].pos.y - height / 2, 0.1);
+          } else {
+            cameraX = gameState.players[playerId].pos.x - width / 2;
+            cameraY = gameState.players[playerId].pos.y - height / 2;
+          }
 
-          background(10, 20, 50);
+          background(10, 15, 50);
           push();
           translate(-cameraX, -cameraY);
-          stroke(50, 80, 120);
+          stroke(50, 60, 120);
           strokeWeight(1);
           for (let x = 0; x < worldWidth; x += 50) {
             line(x, 0, x, worldHeight);
@@ -464,92 +550,136 @@
             line(0, y, worldWidth, y);
           }
 
-          stroke(64, 196, 255);
+          stroke(123, 104, 238);
           strokeWeight(3);
           noFill();
           rect(0, 0, worldWidth, worldHeight);
 
-          for (let zone of gameState.clogZones) {
-            fill(139, 69, 19, 150);
-            noStroke();
-            ellipse(zone.pos.x, zone.pos.y, zone.r * 2);
-            fill(64, 196, 255, 100);
-            ellipse(zone.pos.x, zone.pos.y, zone.r * 1.5);
+          if (Array.isArray(gameState.nebulaZones)) {
+            for (let zone of gameState.nebulaZones) {
+              fill(75, 0, 130, 150);
+              noStroke();
+              ellipse(zone.pos.x, zone.pos.y, zone.r * 2);
+              fill(123, 104, 238, 100);
+              ellipse(zone.pos.x, zone.pos.y, zone.r * 1.5);
+            }
           }
 
-          for (let d of gameState.debris) {
-            fill(139, 69, 19);
-            noStroke();
-            ellipse(d.pos.x, d.pos.y, d.r * 2);
+          if (Array.isArray(gameState.stardust)) {
+            for (let d of gameState.stardust) {
+              fill(75, 0, 130);
+              noStroke();
+              ellipse(d.pos.x, d.pos.y, d.r * 2);
+            }
           }
 
-          for (let pipe of gameState.pipes) {
-            fill(169, 169, 169);
-            noStroke();
-            ellipse(pipe.pos.x, pipe.pos.y, pipe.r * 2);
+          if (Array.isArray(gameState.foods)) {
+            for (let f of gameState.foods) {
+              fill(255, 255, 0);
+              noStroke();
+              ellipse(f.pos.x, f.pos.y, f.r * 2);
+            }
           }
 
-          for (let id in gameState.players) {
-            let player = gameState.players[id];
-            let isHidden = false;
-            for (let pipe of gameState.pipes) {
-              let d = dist(player.pos.x, player.pos.y, pipe.pos.x, pipe.pos.y);
-              if (d < pipe.r + player.r) {
-                isHidden = true;
-                break;
+          if (Array.isArray(gameState.vortexes)) {
+            for (let vortex of gameState.vortexes) {
+              fill(169, 169, 169);
+              noStroke();
+              ellipse(vortex.pos.x, vortex.pos.y, vortex.r * 2);
+            }
+          }
+
+          if (gameState.players) {
+            for (let id in gameState.players) {
+              let player = gameState.players[id];
+              let isHidden = false;
+              if (Array.isArray(gameState.vortexes)) {
+                for (let vortex of gameState.vortexes) {
+                  let d = dist(player.pos.x, player.pos.y, vortex.pos.x, vortex.pos.y);
+                  if (d < vortex.r + player.r) {
+                    isHidden = true;
+                    break;
+                  }
+                }
+              }
+              let [r, g, b] = hexToRgb(player.avatar.color);
+              fill(r, g, b, isHidden ? 100 : 255);
+              noStroke();
+              ellipse(player.pos.x, player.pos.y, player.r * 2);
+              for (let i = 0; i < 50; i++) {
+                let angle = random(TWO_PI);
+                let dist = random(player.r, player.r * 1.2);
+                let x = player.pos.x + cos(angle) * dist;
+                let y = player.pos.y + sin(angle) * dist;
+                fill(r * 0.8, g * 0.8, b * 0.8, isHidden ? 50 : 200);
+                ellipse(x, y, 3);
+              }
+              fill(255, 255, 255, isHidden ? 100 : 255);
+              textAlign(CENTER, CENTER);
+              textSize(player.r * 1.2);
+              textStyle(BOLD);
+              text(player.avatar.accessory, player.pos.x, player.pos.y);
+              fill(255, 255, 255, isHidden ? 100 : 255);
+              textAlign(CENTER);
+              textSize(12);
+              text(player.name, player.pos.x, player.pos.y - player.r - 10);
+            }
+          }
+
+          if (Array.isArray(gameState.bots)) {
+            for (let bot of gameState.bots) {
+              let isHidden = false;
+              if (Array.isArray(gameState.vortexes)) {
+                for (let vortex of gameState.vortexes) {
+                  let d = dist(bot.pos.x, bot.pos.y, vortex.pos.x, vortex.pos.y);
+                  if (d < vortex.r + bot.r) {
+                    isHidden = true;
+                    break;
+                  }
+                }
+              }
+              let [r, g, b] = hexToRgb(bot.avatar.color);
+              fill(r, g, b, isHidden ? 100 : 255);
+              noStroke();
+              ellipse(bot.pos.x, bot.pos.y, bot.r * 2);
+              fill(255, 255, 255, isHidden ? 100 : 255);
+              textAlign(CENTER, CENTER);
+              textSize(bot.r * 1.2);
+              text(bot.avatar.accessory, bot.pos.x, bot.pos.y);
+              textAlign(CENTER);
+              textSize(12);
+              text(bot.name, bot.pos.x, bot.pos.y - bot.r - 10);
+            }
+          }
+
+          if (Array.isArray(gameState.foods) && gameState.players[playerId]) {
+            let currentPlayer = gameState.players[playerId];
+            for (let i = gameState.foods.length - 1; i >= 0; i--) {
+              let food = gameState.foods[i];
+              let d = dist(currentPlayer.pos.x, currentPlayer.pos.y, food.pos.x, food.pos.y);
+              if (d < currentPlayer.r + food.r) {
+                socket.emit('collectFood', { index: i });
               }
             }
-            let [r, g, b] = hexToRgb(player.avatar.color);
-            fill(r, g, b, isHidden ? 100 : 255);
-            noStroke();
-            ellipse(player.pos.x, player.pos.y, player.r * 2);
-            for (let i = 0; i < 50; i++) {
-              let angle = random(TWO_PI);
-              let dist = random(player.r, player.r * 1.2);
-              let x = player.pos.x + cos(angle) * dist;
-              let y = player.pos.y + sin(angle) * dist;
-              fill(r * 0.8, g * 0.8, b * 0.8, isHidden ? 50 : 200);
-              ellipse(x, y, 3);
-            }
-            fill(255, 255, 255, isHidden ? 100 : 255);
-            textAlign(CENTER, CENTER);
-            textSize(player.r * 1.2);
-            textStyle(BOLD);
-            text(player.avatar.accessory, player.pos.x, player.pos.y);
-            fill(255, 255, 255, isHidden ? 100 : 255);
-            textAlign(CENTER);
-            textSize(12);
-            text(player.name, player.pos.x, player.pos.y - player.r - 10);
           }
 
-          for (let bot of gameState.bots) {
-            let isHidden = false;
-            for (let pipe of gameState.pipes) {
-              let d = dist(bot.pos.x, bot.pos.y, pipe.pos.x, pipe.pos.y);
-              if (d < pipe.r + bot.r) {
-                isHidden = true;
-                break;
+          if (Array.isArray(gameState.stardust) && gameState.players[playerId]) {
+            let currentPlayer = gameState.players[playerId];
+            for (let i = gameState.stardust.length - 1; i >= 0; i--) {
+              let stardust = gameState.stardust[i];
+              let d = dist(currentPlayer.pos.x, currentPlayer.pos.y, stardust.pos.x, stardust.pos.y);
+              if (d < currentPlayer.r + stardust.r) {
+                socket.emit('collectStardust', { index: i });
               }
             }
-            let [r, g, b] = hexToRgb(bot.avatar.color);
-            fill(r, g, b, isHidden ? 100 : 255);
-            noStroke();
-            ellipse(bot.pos.x, bot.pos.y, bot.r * 2);
-            fill(255, 255, 255, isHidden ? 100 : 255);
-            textAlign(CENTER, CENTER);
-            textSize(bot.r * 1.2);
-            text(bot.avatar.accessory, bot.pos.x, bot.pos.y);
-            textAlign(CENTER);
-            textSize(12);
-            text(bot.name, bot.pos.x, bot.pos.y - bot.r - 10);
           }
 
           pop();
 
           drawLeaderboard();
           drawMinimap();
-          drawFlushBoostStatus();
-          drawUnclogStatus();
+          drawSurgeStatus();
+          drawAbsorbStatus();
 
           if (isMobile && joystick.active) {
             updateJoystick();
@@ -558,7 +688,7 @@
           let input = {};
           if (isMobile && joystick.active) {
             input.joystick = { x: joystick.x, y: joystick.y };
-          } else {
+          } else if (!cameraLocked) {
             input.mouse = { x: mouseX + cameraX, y: mouseY + cameraY };
           }
           if (socket && isAlive) {
@@ -578,12 +708,15 @@
 
     function keyPressed() {
       if (keyCode === 32 && isAlive) {
-        if (gameMode === 'single' && !flushBoostActive && flushBoostCooldown <= 0) {
-          flushBoostActive = true;
-          flushBoostTimer = 180;
+        if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
+          surgeActive = true;
+          surgeTimer = 180;
         } else if (gameMode === 'multi' && socket) {
-          socket.emit('playerInput', { flushBoost: true });
+          socket.emit('playerInput', { surge: true });
         }
+      } else if (keyCode === 76) {
+        cameraLocked = !cameraLocked;
+        document.getElementById('lock-button').innerHTML = cameraLocked ? '<i class="fas fa-lock"></i> Unlock' : '<i class="fas fa-lock"></i> Lock';
       }
     }
 
@@ -591,8 +724,8 @@
       document.getElementById('menu').style.display = 'none';
       document.getElementById('mode-selection').style.display = 'block';
       document.getElementById('name-input').style.display = 'none';
-      document.getElementById('eaten-notification').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'none';
+      document.getElementById('nft-marketplace').style.display = 'none';
     }
 
     function showNameInput(mode) {
@@ -606,6 +739,19 @@
       document.getElementById('menu').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'block';
       setupAvatarMenu();
+    }
+
+    function showNFTMarketplace() {
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('nft-marketplace').style.display = 'block';
+    }
+
+    function showLeaderboard() {
+      document.getElementById('menu').style.display = 'block';
+      document.getElementById('nft-marketplace').style.display = 'none';
+      document.getElementById('avatar-menu').style.display = 'none';
+      document.getElementById('mode-selection').style.display = 'none';
+      document.getElementById('name-input').style.display = 'none';
     }
 
     function setupAvatarMenu() {
@@ -651,35 +797,34 @@
     function saveAvatar() {
       safeStorageAccess('avatarColor', avatar.color);
       safeStorageAccess('avatarAccessory', avatar.accessory);
-      location.reload(); // Refresh the page to apply saved avatar
+      location.reload();
     }
 
     function returnToMenu() {
       gameStarted = false;
       isAlive = true;
       playerId = null;
-      gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
+      gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
       const canvas = document.querySelector('canvas');
       if (canvas) {
         canvas.style.display = 'none';
       }
-      document.getElementById('eaten-notification').style.display = 'none';
       document.getElementById('menu').style.display = 'block';
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('name-input').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'none';
+      document.getElementById('nft-marketplace').style.display = 'none';
       if (gameMode === 'multi' && socket) {
         socket.disconnect();
         socket = null;
       }
       remove();
-      location.reload(); // Refresh the page to apply saved avatar
     }
 
     window.startGame = function() {
       playerName = document.getElementById('player-name').value.trim();
       if (playerName.length > 12) playerName = playerName.slice(0, 12);
-      if (!playerName) playerName = 'Plumber';
+      if (!playerName) playerName = 'Starfarer';
       document.getElementById('name-input').style.display = 'none';
       const canvas = document.querySelector('canvas');
       if (canvas) {
@@ -691,25 +836,45 @@
       if (gameMode === 'multi') {
         socket = io();
         socket.on('connect', () => {
+          console.log('Connected to server with ID:', socket.id);
           playerId = socket.id;
-          socket.emit('playerJoin', { name: playerName, avatar });
+          socket.emit('playerJoin', { name: playerName, avatar, r: 10 });
         });
         socket.on('gameState', (state) => {
-          if (isAlive && state.players[playerId]) {
+          console.log('Received gameState:', state);
+          if (isAlive && state.players && state.players[playerId]) {
+            state.nebulaZones = Array.isArray(state.nebulaZones) ? state.nebulaZones : [];
+            state.stardust = Array.isArray(state.stardust) ? state.stardust : [];
+            state.foods = Array.isArray(state.foods) ? state.foods : [];
+            state.vortexes = Array.isArray(state.vortexes) ? state.vortexes : [];
+            state.bots = Array.isArray(state.bots) ? state.bots : [];
+            state.leaderboard = Array.isArray(state.leaderboard) ? state.leaderboard : [];
             gameState = state;
           }
         });
         socket.on('flushed', (data) => {
+          console.log('Flushed event received:', data);
           isAlive = false;
           gameStarted = false;
           playerId = null;
-          gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [] };
-          document.getElementById('eaten-notification').style.display = 'block';
-          document.getElementById('eaten-message').textContent = `You were flushed by ${data.flusher}!`;
+          gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
           if (socket) {
             socket.disconnect();
             socket = null;
           }
+          remove();
+          location.reload();
+        });
+        socket.on('connect_error', (error) => {
+          console.error('Socket.IO connection error:', error);
+          gameStarted = false;
+          isAlive = false;
+          if (socket) {
+            socket.disconnect();
+            socket = null;
+          }
+          remove();
+          location.reload();
         });
       }
     };
@@ -717,6 +882,7 @@
     function setupTouchControls() {
       let joystickDiv = document.getElementById('joystick');
       let skillButton = document.getElementById('skill-button');
+      let lockButton = document.getElementById('lock-button');
 
       joystickDiv.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -745,12 +911,18 @@
 
       skillButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (gameMode === 'single' && !flushBoostActive && flushBoostCooldown <= 0) {
-          flushBoostActive = true;
-          flushBoostTimer = 180;
+        if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
+          surgeActive = true;
+          surgeTimer = 180;
         } else if (gameMode === 'multi' && socket && isAlive) {
-          socket.emit('playerInput', { flushBoost: true });
+          socket.emit('playerInput', { surge: true });
         }
+      });
+
+      lockButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        cameraLocked = !cameraLocked;
+        lockButton.innerHTML = cameraLocked ? '<i class="fas fa-lock"></i> Unlock' : '<i class="fas fa-lock"></i> Lock';
       });
     }
 
@@ -762,33 +934,35 @@
 
     function updateLeaderboard() {
       leaderboard = [];
-      leaderboard.push({ name: player.name, size: floor(player.r) });
-      for (let bot of bots) {
-        leaderboard.push({ name: bot.name, size: floor(bot.r) });
+      if (gameMode === 'single' && player) {
+        leaderboard.push({ name: player.name, size: floor(player.r) });
+        for (let bot of bots) {
+          leaderboard.push({ name: bot.name, size: floor(bot.r) });
+        }
+        leaderboard.sort((a, b) => b.size - a.size);
+        leaderboard = leaderboard.slice(0, 10);
       }
-      leaderboard.sort((a, b) => b.size - a.size);
-      leaderboard = leaderboard.slice(0, 5);
     }
 
     function drawLeaderboard() {
       push();
       fill(0, 0, 50, 200);
-      stroke(64, 196, 255);
+      stroke(123, 104, 238);
       strokeWeight(2);
-      rect(10, 10, 180, 160, 10);
-      fill(64, 196, 255);
+      rect(10, 10, 200, 260, 10);
+      fill(123, 104, 238);
       textSize(14);
       textAlign(LEFT);
       textStyle(NORMAL);
       textFont('Press Start 2P');
-      text('Leaderboard', 20, 35);
+      text('AURA Leaderboard', 20, 35);
       fill(255);
       textSize(12);
       if (gameMode === 'single') {
         for (let i = 0; i < leaderboard.length; i++) {
           text(`${i + 1}. ${leaderboard[i].name}: ${leaderboard[i].size}`, 20, 60 + i * 20);
         }
-      } else {
+      } else if (Array.isArray(gameState.leaderboard)) {
         for (let i = 0; i < gameState.leaderboard.length; i++) {
           text(`${i + 1}. ${gameState.leaderboard[i].name}: ${gameState.leaderboard[i].size}`, 20, 60 + i * 20);
         }
@@ -811,25 +985,29 @@
       }
 
       fill(0, 0, 50, 200);
-      stroke(64, 196, 255);
+      stroke(123, 104, 238);
       strokeWeight(2);
       rect(0, 0, miniWidth, miniHeight, 5);
 
-      fill(64, 196, 255);
+      fill(123, 104, 238);
       textSize(10);
       textFont('Press Start 2P');
       textAlign(LEFT);
-      text('Map', 5, 15);
+      text('Cosmic Map', 5, 15);
 
       if (gameMode === 'single') {
-        fill(139, 69, 19);
+        fill(75, 0, 130);
         noStroke();
-        for (let zone of clogZones) {
+        for (let zone of nebulaZones) {
           ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
         }
+        fill(255, 255, 0);
+        for (let f of foods) {
+          ellipse(f.pos.x * scaleX, f.pos.y * scaleY, f.r * 2 * scaleX);
+        }
         fill(169, 169, 169);
-        for (let pipe of pipes) {
-          ellipse(pipe.pos.x * scaleX, pipe.pos.y * scaleY, pipe.r * 2 * scaleX);
+        for (let vortex of vortexes) {
+          ellipse(vortex.pos.x * scaleX, vortex.pos.y * scaleY, vortex.r * 2 * scaleX);
         }
         let [r, g, b] = hexToRgb(player.avatar.color);
         fill(r, g, b);
@@ -840,31 +1018,45 @@
           ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
         }
       } else {
-        fill(139, 69, 19);
-        noStroke();
-        for (let zone of gameState.clogZones) {
-          ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
+        if (Array.isArray(gameState.nebulaZones)) {
+          fill(75, 0, 130);
+          noStroke();
+          for (let zone of gameState.nebulaZones) {
+            ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
+          }
         }
-        fill(169, 169, 169);
-        for (let pipe of gameState.pipes) {
-          ellipse(pipe.pos.x * scaleX, pipe.pos.y * scaleY, pipe.r * 2 * scaleX);
+        if (Array.isArray(gameState.foods)) {
+          fill(255, 255, 0);
+          for (let f of gameState.foods) {
+            ellipse(f.pos.x * scaleX, f.pos.y * scaleY, f.r * 2 * scaleX);
+          }
         }
-        for (let id in gameState.players) {
-          let p = gameState.players[id];
-          let [r, g, b] = hexToRgb(p.avatar.color);
-          fill(r, g, b);
-          ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
+        if (Array.isArray(gameState.vortexes)) {
+          fill(169, 169, 169);
+          for (let vortex of gameState.vortexes) {
+            ellipse(vortex.pos.x * scaleX, vortex.pos.y * scaleY, vortex.r * 2 * scaleX);
+          }
         }
-        for (let bot of gameState.bots) {
-          let [r, g, b] = hexToRgb(bot.avatar.color);
-          fill(r, g, b);
-          ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+        if (gameState.players) {
+          for (let id in gameState.players) {
+            let p = gameState.players[id];
+            let [r, g, b] = hexToRgb(p.avatar.color);
+            fill(r, g, b);
+            ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
+          }
+        }
+        if (Array.isArray(gameState.bots)) {
+          for (let bot of gameState.bots) {
+            let [r, g, b] = hexToRgb(bot.avatar.color);
+            fill(r, g, b);
+            ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
+          }
         }
       }
       pop();
     }
 
-    function drawFlushBoostStatus() {
+    function drawSurgeStatus() {
       push();
       let isMobile = windowWidth < 768;
       let boxWidth = isMobile ? 50 : 110;
@@ -873,7 +1065,7 @@
       let y = isMobile ? height / 2 - boxHeight / 2 : 10;
 
       fill(0, 0, 50, 200);
-      stroke(64, 196, 255);
+      stroke(123, 104, 238);
       strokeWeight(2);
       rect(x, y, boxWidth, boxHeight, 10);
 
@@ -882,19 +1074,17 @@
       let progress = 1;
 
       if (gameMode === 'single') {
-        if (flushBoostActive) {
-          progress = flushBoostTimer / maxDuration;
-        } else if (flushBoostCooldown > 0) {
-          progress = 1 - (flushBoostCooldown / maxCooldown);
+        if (surgeActive) {
+          progress = surgeTimer / maxDuration;
+        } else if (surgeCooldown > 0) {
+          progress = 1 - (surgeCooldown / maxCooldown);
         }
-      } else {
+      } else if (gameState.players && gameState.players[playerId]) {
         let player = gameState.players[playerId];
-        if (player) {
-          if (player.flushBoostActive) {
-            progress = player.flushBoostTimer / maxDuration;
-          } else if (player.flushBoostCooldown > 0) {
-            progress = 1 - (player.flushBoostCooldown / maxCooldown);
-          }
+        if (player.surgeActive) {
+          progress = player.surgeTimer / maxDuration;
+        } else if (player.surgeCooldown > 0) {
+          progress = 1 - (player.surgeCooldown / maxCooldown);
         }
       }
 
@@ -910,14 +1100,14 @@
         if (progress < 1 && progress > 0) {
           fill(255, 87, 34);
         } else {
-          fill(64, 196, 255);
+          fill(123, 104, 238);
         }
         rect(barX, barY + (barHeight - filledHeight), barWidth, filledHeight, 5);
-        fill(64, 196, 255);
+        fill(123, 104, 238);
         textSize(10);
         textFont('Press Start 2P');
         textAlign(CENTER);
-        text('FLUSH', x + boxWidth / 2, y + 10);
+        text('SURGE', x + boxWidth / 2, y + 10);
       } else {
         let barX = x + 15;
         let barY = y + 30;
@@ -929,20 +1119,20 @@
         if (progress < 1 && progress > 0) {
           fill(255, 87, 34);
         } else {
-          fill(64, 196, 255);
+          fill(123, 104, 238);
         }
         rect(barX, barY, barWidth * progress, barHeight, 5);
-        fill(64, 196, 255);
+        fill(123, 104, 238);
         textSize(10);
         textFont('Press Start 2P');
         textAlign(CENTER);
-        text('FLUSH', x + boxWidth / 2, y + 15);
+        text('SURGE', x + boxWidth / 2, y + 15);
       }
       pop();
     }
 
-    function drawUnclogStatus() {
-      if (unclogTimer > 0) {
+    function drawAbsorbStatus() {
+      if (absorbTimer > 0) {
         push();
         let isMobile = windowWidth < 768;
         let boxWidth = isMobile ? 50 : 110;
@@ -951,12 +1141,12 @@
         let y = isMobile ? height / 2 + 70 : 70;
 
         fill(0, 0, 50, 200);
-        stroke(64, 196, 255);
+        stroke(123, 104, 238);
         strokeWeight(2);
         rect(x, y, boxWidth, boxHeight, 10);
 
-        let maxUnclogTime = 600;
-        let progress = unclogTimer / maxUnclogTime;
+        let maxAbsorbTime = 600;
+        let progress = absorbTimer / maxAbsorbTime;
 
         if (isMobile) {
           let barX = x + 15;
@@ -968,11 +1158,11 @@
           rect(barX, barY, barWidth, barHeight, 5);
           fill(255, 87, 34);
           rect(barX, barY, barWidth * progress, barHeight, 5);
-          fill(64, 196, 255);
+          fill(123, 104, 238);
           textSize(10);
           textFont('Press Start 2P');
           textAlign(CENTER);
-          text('UNCLOG', x + boxWidth / 2, y + 10);
+          text('ABSORB', x + boxWidth / 2, y + 10);
         } else {
           let barX = x + 15;
           let barY = y + 30;
@@ -983,17 +1173,17 @@
           rect(barX, barY, barWidth, barHeight, 5);
           fill(255, 87, 34);
           rect(barX, barY, barWidth * progress, barHeight, 5);
-          fill(64, 196, 255);
+          fill(123, 104, 238);
           textSize(10);
           textFont('Press Start 2P');
           textAlign(CENTER);
-          text('UNCLOG', x + boxWidth / 2, y + 15);
+          text('ABSORB', x + boxWidth / 2, y + 15);
         }
         pop();
       }
     }
 
-    class Plunger {
+    class AuraOrb {
       constructor(x, y, r, isPlayer) {
         this.pos = createVector(x, y);
         this.r = r;
@@ -1001,27 +1191,32 @@
         this.isPlayer = isPlayer;
         this.target = isPlayer ? null : createVector(random(worldWidth), random(worldHeight));
         this.name = "";
-        this.inClogZone = false;
-        this.avatar = isPlayer ? avatar : { color: '#F5F5F5', accessory: '🪠' };
+        this.inNebulaZone = false;
+        this.avatar = isPlayer ? avatar : { color: '#E6E6FA', accessory: '✨' };
+        this.surgeActive = false;
+        this.surgeTimer = 0;
+        this.surgeCooldown = 0;
       }
 
       update() {
-        let speedMultiplier = this.inClogZone ? 0.5 : 1;
-        if (this.isPlayer && flushBoostActive) {
+        let speedMultiplier = this.inNebulaZone ? 0.5 : 1;
+        if (this.isPlayer && surgeActive) {
           speedMultiplier *= 3.8;
         }
         if (this.isPlayer) {
           let dir;
           if (isMobile && joystick.active) {
             dir = createVector(joystick.x * 5, joystick.y * 5);
-          } else {
+          } else if (!cameraLocked) {
             let mouse = createVector(mouseX + cameraX, mouseY + cameraY);
             dir = p5.Vector.sub(mouse, this.pos);
+          } else {
+            dir = createVector(0, 0);
           }
           dir.setMag(3.6 * speedMultiplier / sqrt(this.r));
           this.vel.lerp(dir, 0.1);
         } else {
-          let nearest = this.findNearestDebris();
+          let nearest = this.findNearestCollectible();
           if (nearest && p5.Vector.dist(this.pos, nearest.pos) < 200) {
             this.target = nearest.pos;
           } else if (p5.Vector.dist(this.pos, this.target) < 50) {
@@ -1036,14 +1231,18 @@
         this.pos.y = constrain(this.pos.y, this.r, worldHeight - this.r);
       }
 
-      findNearestDebris() {
+      findNearestCollectible() {
         let nearest = null;
         let minDist = Infinity;
-        for (let d of debris) {
-          let dist = p5.Vector.dist(this.pos, d.pos);
+        let collectibles = gameMode === 'single' ? [...stardust, ...foods] : [
+          ...(Array.isArray(gameState.stardust) ? gameState.stardust : []),
+          ...(Array.isArray(gameState.foods) ? gameState.foods : [])
+        ];
+        for (let c of collectibles) {
+          let dist = p5.Vector.dist(this.pos, c.pos);
           if (dist < minDist) {
             minDist = dist;
-            nearest = d;
+            nearest = c;
           }
         }
         return nearest;
@@ -1051,8 +1250,9 @@
 
       show() {
         let isHidden = false;
-        for (let pipe of pipes) {
-          if (p5.Vector.dist(this.pos, pipe.pos) < pipe.r + this.r) {
+        let vortexArray = gameMode === 'single' ? vortexes : (Array.isArray(gameState.vortexes) ? gameState.vortexes : []);
+        for (let vortex of vortexArray) {
+          if (p5.Vector.dist(this.pos, vortex.pos) < vortex.r + this.r) {
             isHidden = true;
             break;
           }
@@ -1084,10 +1284,20 @@
         pop();
       }
 
-      clears(debris) {
-        let d = p5.Vector.dist(this.pos, debris.pos);
-        if (d < this.r + debris.r) {
-          let area = PI * this.r * this.r + PI * debris.r * debris.r;
+      clears(collectible) {
+        let d = p5.Vector.dist(this.pos, collectible.pos);
+        if (d < this.r + collectible.r) {
+          let area = PI * this.r * this.r + PI * collectible.r * collectible.r;
+          this.r = sqrt(area / PI);
+          return true;
+        }
+        return false;
+      }
+
+      clearsFood(food) {
+        let d = p5.Vector.dist(this.pos, food.pos);
+        if (d < this.r + food.r) {
+          let area = PI * this.r * this.r + PI * 2 * 2;
           this.r = sqrt(area / PI);
           return true;
         }
@@ -1099,26 +1309,39 @@
         return this.r > other.r * 1.1 && d < this.r + other.r;
       }
 
-      clearPlunger(other) {
+      clearAuraOrb(other) {
         let area = PI * this.r * this.r + PI * other.r * other.r;
         this.r = sqrt(area / PI);
       }
     }
 
-    class Debris {
+    class Stardust {
       constructor(x, y) {
         this.pos = createVector(x || random(worldWidth), y || random(worldHeight));
         this.r = 5;
       }
 
       show() {
-        fill(139, 69, 19);
+        fill(75, 0, 130);
         noStroke();
         ellipse(this.pos.x, this.pos.y, this.r * 2);
       }
     }
 
-    class Pipe {
+    class Food {
+      constructor(x, y) {
+        this.pos = createVector(x || random(worldWidth), y || random(worldHeight));
+        this.r = 3;
+      }
+
+      show() {
+        fill(255, 255, 0);
+        noStroke();
+        ellipse(this.pos.x, this.pos.y, this.r * 2);
+      }
+    }
+
+    class Vortex {
       constructor() {
         this.pos = createVector(random(worldWidth), random(worldHeight));
         this.r = 30;
@@ -1131,7 +1354,7 @@
       }
     }
 
-    class ClogZone {
+    class NebulaZone {
       constructor() {
         this.pos = createVector(random(worldWidth), random(worldHeight));
         this.r = 100;
@@ -1141,17 +1364,20 @@
       update() {
         this.spawnTimer++;
         if (this.spawnTimer >= 60) {
-          debris.push(new Debris(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
+          let targetStardust = gameMode === 'single' ? stardust : (Array.isArray(gameState.stardust) ? gameState.stardust : []);
+          let targetFoods = gameMode === 'single' ? foods : (Array.isArray(gameState.foods) ? gameState.foods : []);
+          targetStardust.push(new Stardust(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
+          targetFoods.push(new Food(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
           this.spawnTimer = 0;
         }
       }
 
       show() {
         push();
-        fill(139, 69, 19, 150);
+        fill(75, 0, 130, 150);
         noStroke();
         ellipse(this.pos.x, this.pos.y, this.r * 2);
-        fill(64, 196, 255, 100);
+        fill(123, 104, 238, 100);
         ellipse(this.pos.x, this.pos.y, this.r * 1.5);
         pop();
       }
