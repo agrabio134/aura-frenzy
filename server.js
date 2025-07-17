@@ -1,9 +1,16 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  },
+  transports: ["websocket", "polling"]
+});
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const WORLD_WIDTH = 4000;
 const WORLD_HEIGHT = 4000;
@@ -20,7 +27,7 @@ let gameState = {
     hostId: null,
     isGameStarted: false,
     countdown: -1,
-    duration: 600, // Default 10 minutes in seconds
+    duration: 600,
     gameTime: 0
   }
 };
@@ -71,23 +78,6 @@ function initializeGame() {
       r: 100
     });
   }
-
-  for (let id in gameState.players) {
-    if (!gameState.players[id].spectating) {
-      gameState.players[id] = {
-        ...gameState.players[id],
-        pos: getRandomPosition(),
-        r: 20,
-        vel: { x: 0, y: 0 },
-        flushBoostActive: false,
-        flushBoostCooldown: 0,
-        flushBoostTimer: 0,
-        inClogZone: false,
-        unclogTimer: 0,
-        isActive: true
-      };
-    }
-  }
 }
 
 function getRandomPosition() {
@@ -105,6 +95,22 @@ function distance(p1, p2) {
   return Math.sqrt((p1.pos.x - p2.pos.x) ** 2 + (p1.pos.y - p2.pos.y) ** 2);
 }
 
+let lobbyUpdatePending = false;
+function emitLobbyUpdate() {
+  if (lobbyUpdatePending) return;
+  lobbyUpdatePending = true;
+  setTimeout(() => {
+    io.emit('lobbyUpdate', {
+      players: gameState.lobby.players,
+      hostId: gameState.lobby.hostId,
+      isGameStarted: gameState.lobby.isGameStarted,
+      countdown: gameState.lobby.countdown,
+      duration: gameState.lobby.duration
+    });
+    lobbyUpdatePending = false;
+  }, 100);
+}
+
 io.on('connection', (socket) => {
   console.log(`Player connected: ${socket.id}`);
 
@@ -120,91 +126,67 @@ io.on('connection', (socket) => {
       gameState.lobby.hostId = socket.id;
     }
 
-    socket.emit('lobbyUpdate', {
-      players: gameState.lobby.players,
-      hostId: gameState.lobby.hostId,
-      isGameStarted: gameState.lobby.isGameStarted,
-      countdown: gameState.lobby.countdown,
-      duration: gameState.lobby.duration
-    });
-    socket.broadcast.emit('lobbyUpdate', {
-      players: gameState.lobby.players,
-      hostId: gameState.lobby.hostId,
-      isGameStarted: gameState.lobby.isGameStarted,
-      countdown: gameState.lobby.countdown,
-      duration: gameState.lobby.duration
-    });
+    emitLobbyUpdate();
   });
 
   socket.on('toggleReady', () => {
     if (gameState.lobby.players[socket.id]) {
       gameState.lobby.players[socket.id].ready = !gameState.lobby.players[socket.id].ready;
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: gameState.lobby.isGameStarted,
-        countdown: gameState.lobby.countdown,
-        duration: gameState.lobby.duration
-      });
+      emitLobbyUpdate();
     }
   });
 
   socket.on('toggleSpectate', () => {
     if (gameState.lobby.players[socket.id] && socket.id === gameState.lobby.hostId) {
       gameState.lobby.players[socket.id].spectating = !gameState.lobby.players[socket.id].spectating;
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: gameState.lobby.isGameStarted,
-        countdown: gameState.lobby.countdown,
-        duration: gameState.lobby.duration
-      });
+      emitLobbyUpdate();
     }
   });
 
   socket.on('startGame', (data) => {
-    if (socket.id === gameState.lobby.hostId && !gameState.lobby.isGameStarted) {
-      gameState.lobby.isGameStarted = true;
-      gameState.lobby.countdown = 10;
-      gameState.lobby.duration = data.duration || 600;
-      gameState.lobby.gameTime = 0;
-
-      for (let id in gameState.lobby.players) {
-        if (!gameState.lobby.players[id].spectating) {
-          gameState.players[id] = {
-            pos: getRandomPosition(),
-            r: 20,
-            vel: { x: 0, y: 0 },
-            name: gameState.lobby.players[id].name,
-            flushBoostActive: false,
-            flushBoostCooldown: 0,
-            flushBoostTimer: 0,
-            inClogZone: false,
-            unclogTimer: 0,
-            isActive: true,
-            avatar: gameState.lobby.players[id].avatar,
-            spectating: false
-          };
-        } else {
-          gameState.players[id] = {
-            name: gameState.lobby.players[id].name,
-            avatar: gameState.lobby.players[id].avatar,
-            spectating: true,
-            pos: { x: WORLD_WIDTH / 2, y: WORLD_HEIGHT / 2 },
-            isActive: false
-          };
-        }
-      }
-
-      initializeGame();
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: true,
-        countdown: gameState.lobby.countdown,
-        duration: gameState.lobby.duration
-      });
+    if (socket.id !== gameState.lobby.hostId || gameState.lobby.isGameStarted) return;
+    const allReady = Object.values(gameState.lobby.players).every(p => p.ready || p.spectating);
+    if (!allReady) {
+      socket.emit('error', { message: 'Not all players are ready' });
+      return;
     }
+
+    gameState.lobby.isGameStarted = true;
+    gameState.lobby.countdown = 10;
+    gameState.lobby.duration = data.duration || 600;
+    gameState.lobby.gameTime = 0;
+
+    const newPlayers = {};
+    for (let id in gameState.lobby.players) {
+      if (!gameState.lobby.players[id].spectating) {
+        newPlayers[id] = {
+          pos: getRandomPosition(),
+          r: 20,
+          vel: { x: 0, y: 0 },
+          name: gameState.lobby.players[id].name,
+          flushBoostActive: false,
+          flushBoostCooldown: 0,
+          flushBoostTimer: 0,
+          inClogZone: false,
+          unclogTimer: 0,
+          isActive: true,
+          avatar: gameState.lobby.players[id].avatar,
+          spectating: false
+        };
+      } else {
+        newPlayers[id] = {
+          name: gameState.lobby.players[id].name,
+          avatar: gameState.lobby.players[id].avatar,
+          spectating: true,
+          pos: { x: WORLD_WIDTH / 2, y: WORLD_HEIGHT / 2 },
+          isActive: false
+        };
+      }
+    }
+    gameState.players = newPlayers;
+
+    initializeGame();
+    emitLobbyUpdate();
   });
 
   socket.on('playerInput', (input) => {
@@ -221,7 +203,7 @@ io.on('connection', (socket) => {
       }
 
       if (input.joystick) {
-        let dirX = input.joystick.x * 6; // Increased speed to match single-player
+        let dirX = input.joystick.x * 6;
         let dirY = input.joystick.y * 6;
         let mag = Math.sqrt(dirX ** 2 + dirY ** 2);
         if (mag > 0) {
@@ -265,48 +247,26 @@ io.on('connection', (socket) => {
       gameState.lobby.isGameStarted = false;
       gameState.lobby.countdown = -1;
       gameState.lobby.gameTime = 0;
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: false,
-        countdown: -1,
-        duration: gameState.lobby.duration
-      });
+      emitLobbyUpdate();
     } else {
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: gameState.lobby.isGameStarted,
-        countdown: gameState.lobby.countdown,
-        duration: gameState.lobby.duration
-      });
+      emitLobbyUpdate();
     }
   });
 });
 
-// Countdown interval (every 1000ms)
 setInterval(() => {
   if (gameState.lobby.isGameStarted && gameState.lobby.countdown > 0) {
     gameState.lobby.countdown--;
-    io.emit('lobbyUpdate', {
-      players: gameState.lobby.players,
-      hostId: gameState.lobby.hostId,
-      isGameStarted: true,
-      countdown: gameState.lobby.countdown,
-      duration: gameState.lobby.duration
-    });
+    emitLobbyUpdate();
   }
 }, 1000);
 
-// Game loop (every 16.67ms for 60 FPS)
+let leaderboardNeedsUpdate = false;
 setInterval(() => {
   if (gameState.lobby.isGameStarted && gameState.lobby.countdown <= 0) {
-    // Increment game time
     gameState.lobby.gameTime += 1 / 60;
 
-    // Check if game duration has been reached
     if (gameState.lobby.gameTime >= gameState.lobby.duration) {
-      // End the game and send final leaderboard
       io.emit('gameEnded', gameState.leaderboard);
       gameState.lobby.isGameStarted = false;
       gameState.lobby.countdown = -1;
@@ -317,13 +277,7 @@ setInterval(() => {
       gameState.pipes = [];
       gameState.clogZones = [];
       gameState.leaderboard = [];
-      io.emit('lobbyUpdate', {
-        players: gameState.lobby.players,
-        hostId: gameState.lobby.hostId,
-        isGameStarted: false,
-        countdown: -1,
-        duration: gameState.lobby.duration
-      });
+      emitLobbyUpdate();
       return;
     }
 
@@ -349,7 +303,7 @@ setInterval(() => {
 
     for (let id in gameState.players) {
       let player = gameState.players[id];
-      if (!player || !player.pos || !player.isActive || player.spectating) continue;
+      if (!player || !player.pos || typeof player.pos.x !== 'number' || !player.isActive || player.spectating) continue;
 
       player.inClogZone = false;
       for (let zone of gameState.clogZones) {
@@ -364,6 +318,7 @@ setInterval(() => {
               r: 100
             });
             player.unclogTimer = 0;
+            leaderboardNeedsUpdate = true;
           }
           break;
         }
@@ -399,6 +354,7 @@ setInterval(() => {
             pos: { x: Math.random() * WORLD_WIDTH, y: Math.random() * WORLD_HEIGHT },
             r: 5
           });
+          leaderboardNeedsUpdate = true;
         }
       }
 
@@ -425,9 +381,11 @@ setInterval(() => {
               accessory: accessories[Math.floor(Math.random() * accessories.length)]
             }
           });
+          leaderboardNeedsUpdate = true;
         }
       }
 
+      const playersToRemove = [];
       for (let otherId in gameState.players) {
         if (otherId !== id && gameState.players[otherId]?.isActive && !gameState.players[otherId].spectating) {
           let otherPlayer = gameState.players[otherId];
@@ -437,11 +395,12 @@ setInterval(() => {
             player.r = Math.sqrt(area / Math.PI);
             otherPlayer.isActive = false;
             io.to(otherId).emit('flushed', { flusher: player.name });
-            delete gameState.players[otherId];
-            console.log(`Player flushed: ${otherId} by ${player.name}`);
+            playersToRemove.push(otherId);
+            leaderboardNeedsUpdate = true;
           }
         }
       }
+      playersToRemove.forEach(id => delete gameState.players[id]);
     }
 
     for (let bot of gameState.bots) {
@@ -503,9 +462,11 @@ setInterval(() => {
             pos: { x: Math.random() * WORLD_WIDTH, y: Math.random() * WORLD_HEIGHT },
             r: 5
           });
+          leaderboardNeedsUpdate = true;
         }
       }
 
+      const playersToRemove = [];
       for (let id in gameState.players) {
         let player = gameState.players[id];
         if (!player || !player.pos || !player.isActive || player.spectating) continue;
@@ -514,30 +475,35 @@ setInterval(() => {
           bot.r = Math.sqrt(area / Math.PI);
           player.isActive = false;
           io.to(id).emit('flushed', { flusher: bot.name });
-          delete gameState.players[id];
-          console.log(`Player flushed: ${id} by ${bot.name}`);
+          playersToRemove.push(id);
+          leaderboardNeedsUpdate = true;
         }
       }
+      playersToRemove.forEach(id => delete gameState.players[id]);
     }
 
-    gameState.leaderboard = [];
-    for (let id in gameState.players) {
-      if (gameState.players[id] && gameState.players[id].isActive && !gameState.players[id].spectating) {
-        gameState.leaderboard.push({ name: gameState.players[id].name, size: Math.floor(gameState.players[id].r) });
+    if (leaderboardNeedsUpdate) {
+      gameState.leaderboard = [];
+      for (let id in gameState.players) {
+        if (gameState.players[id] && gameState.players[id].isActive && !gameState.players[id].spectating) {
+          gameState.leaderboard.push({ name: gameState.players[id].name, size: Math.floor(gameState.players[id].r) });
+        }
       }
-    }
-    for (let bot of gameState.bots) {
-      if (bot) {
-        gameState.leaderboard.push({ name: bot.name, size: Math.floor(bot.r) });
+      for (let bot of gameState.bots) {
+        if (bot) {
+          gameState.leaderboard.push({ name: bot.name, size: Math.floor(bot.r) });
+        }
       }
+      gameState.leaderboard.sort((a, b) => b.size - a.size);
+      gameState.leaderboard = gameState.leaderboard.slice(0, 5);
+      leaderboardNeedsUpdate = false;
     }
-    gameState.leaderboard.sort((a, b) => b.size - a.size);
-    gameState.leaderboard = gameState.leaderboard.slice(0, 5);
 
     io.emit('gameState', gameState);
   }
 }, 1000 / 60);
 
-server.listen(3000, () => {
-  console.log('Server running on port 3000');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
