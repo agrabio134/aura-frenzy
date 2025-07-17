@@ -913,7 +913,7 @@
         }
         setup();
       } else if (gameMode === 'multi') {
-        socket = io('http://localhost:3000');
+        socket = io('https://aura-frenzy.onrender.com');
         socket.on('connect', () => {
           console.log('Connected to server with ID:', socket.id);
           playerId = socket.id;
