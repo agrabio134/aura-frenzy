@@ -25,7 +25,7 @@
       width: 100vw !important;
       height: 100vh !important;
     }
-    #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace {
+    #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace, #lobby, #leaderboard-end {
       text-align: center;
       padding: 20px;
       background: rgba(0, 0, 0, 0.7);
@@ -39,24 +39,24 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
-    #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1 {
+    #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1, #lobby h1, #leaderboard-end h1 {
       font-size: 32px;
       color: #7b68ee;
       text-shadow: 0 0 10px #7b68ee, 0 0 20px #7b68ee;
       margin-bottom: 40px;
       letter-spacing: 2px;
     }
-    #nft-marketplace p {
+    #nft-marketplace p, #lobby p, #leaderboard-end p {
       color: #fff;
       font-size: 16px;
       margin-bottom: 20px;
     }
-    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #avatar-menu .button-container, #nft-marketplace .button-container {
+    #menu .button-container, #mode-selection .button-container, #name-input .button-container, #avatar-menu .button-container, #nft-marketplace .button-container, #lobby .button-container, #leaderboard-end .button-container {
       display: flex;
       flex-direction: column;
       gap: 15px;
     }
-    #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button {
+    #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button, #lobby button, #leaderboard-end button {
       padding: 15px 30px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
@@ -72,19 +72,19 @@
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-    #menu button.play, #mode-selection button.play, #name-input button.play, #avatar-menu button.play, #nft-marketplace button.play {
+    #menu button.play, #mode-selection button.play, #name-input button.play, #avatar-menu button.play, #nft-marketplace button.play, #lobby button.play, #leaderboard-end button.play {
       background: linear-gradient(45deg, #7b68ee, #483d8b);
     }
-    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #avatar-menu button.play:hover, #nft-marketplace button.play:hover {
+    #menu button.play:hover, #mode-selection button.play:hover, #name-input button.play:hover, #avatar-menu button.play:hover, #nft-marketplace button.play:hover, #lobby button.play:hover, #leaderboard-end button.play:hover {
       background: linear-gradient(45deg, #6a5acd, #3c2f6b);
       box-shadow: 0 0 15px #7b68ee;
       transform: scale(1.05);
     }
-    #menu button:disabled, #mode-selection button:disabled, #name-input button:disabled, #avatar-menu button:disabled, #nft-marketplace button:disabled {
+    #menu button:disabled, #mode-selection button:disabled, #name-input button:disabled, #avatar-menu button:disabled, #nft-marketplace button:disabled, #lobby button:disabled, #leaderboard-end button:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
-    #name-input input {
+    #name-input input, #lobby select {
       padding: 10px;
       font-size: 16px;
       font-family: 'Press Start 2P', cursive;
@@ -130,6 +130,39 @@
       background-size: cover;
       background-position: center;
     }
+    #lobby .player-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 14px;
+    }
+    #lobby .player-list div {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 10px;
+      border-bottom: 1px solid #7b68ee;
+    }
+    #lobby .countdown {
+      font-size: 36px;
+      color: #ff4500;
+      text-shadow: 0 0 15px #ff4500;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    #leaderboard-end .leaderboard-list {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 14px;
+    }
+    #leaderboard-end .leaderboard-list div {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 10px;
+      border-bottom: 1px solid #7b68ee;
+    }
     #joystick {
       position: fixed;
       bottom: 30px;
@@ -173,16 +206,20 @@
       bottom: 90px;
     }
     @media (max-width: 600px) {
-      #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace {
+      #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace, #lobby, #leaderboard-end {
         padding: 15px;
       }
-      #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1 {
+      #menu h1, #mode-selection h1, #name-input h1, #avatar-menu h1, #nft-marketplace h1, #lobby h1, #leaderboard-end h1 {
         font-size: 24px;
         margin-bottom: 30px;
       }
-      #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button {
+      #menu button, #mode-selection button, #name-input button, #avatar-menu button, #nft-marketplace button, #lobby button, #leaderboard-end button {
         font-size: 14px;
         padding: 12px 25px;
+      }
+      #lobby .countdown {
+        font-size: 28px;
+        margin-bottom: 20px;
       }
       #joystick, #skill-button, #lock-button {
         display: block;
@@ -204,16 +241,33 @@
     <h1>SELECT MODE</h1>
     <div class="button-container">
       <button class="play" onclick="showNameInput('single')"><i class="fas fa-user"></i> Single Player</button>
-      <button class="play" disabled title="Multiplayer is locked" style="opacity: 0.6; cursor: not-allowed;">
-        <i class="fas fa-lock"></i> Multiplayer Locked
-      </button>
+      <button class="play" onclick="showNameInput('multi')"><i class="fas fa-users"></i> Multiplayer</button>
     </div>
   </div>
   <div id="name-input" style="display: none;">
     <h1>ENTER NAME</h1>
     <input type="text" id="player-name" maxlength="12" placeholder="Your Name">
     <div class="button-container">
-      <button class="play" onclick="startGame()"><i class="fas fa-play"></i> Start Game</button>
+      <button class="play" onclick="joinGame()"><i class="fas fa-play"></i> Join Game</button>
+    </div>
+  </div>
+  <div id="lobby" style="display: none;">
+    <h1>LOBBY</h1>
+    <p id="countdown" class="countdown" style="display: none;"></p>
+    <select id="game-duration" style="display: none;">
+      <option value="300">5 Minutes</option>
+      <option value="420">7 Minutes</option>
+      <option value="600" selected>10 Minutes</option>
+      <option value="900">15 Minutes</option>
+      <option value="1800">30 Minutes</option>
+      <option value="3600">1 Hour</option>
+    </select>
+    <div id="player-list" class="player-list"></div>
+    <div class="button-container">
+      <button class="play" id="spectate-button" onclick="toggleSpectate()" style="display: none;"><i class="fas fa-eye"></i> Spectate</button>
+      <button class="play" id="ready-button" onclick="toggleReady()"><i class="fas fa-check"></i> Ready</button>
+      <button class="play" id="start-button" onclick="startGame()" disabled><i class="fas fa-play"></i> Start Game</button>
+      <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back</button>
     </div>
   </div>
   <div id="avatar-menu" style="display: none;">
@@ -246,6 +300,13 @@
       <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back</button>
     </div>
   </div>
+  <div id="leaderboard-end" style="display: none;">
+    <h1>FINAL LEADERBOARD</h1>
+    <div id="leaderboard-list" class="leaderboard-list"></div>
+    <div class="button-container">
+      <button class="play" onclick="returnToMenu()"><i class="fas fa-arrow-left"></i> Back to Menu</button>
+    </div>
+  </div>
   <div id="joystick">
     <div id="joystick-knob"></div>
   </div>
@@ -265,6 +326,8 @@
     let playerId = null;
     let isAlive = true;
     let cameraLocked = false;
+    let isHost = false;
+    let isSpectating = false;
 
     // Avatar settings
     let avatar = {
@@ -287,10 +350,10 @@
     let absorbTimer = 0;
 
     // Multiplayer state
-    let gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
+    let gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [], lobby: { players: {}, hostId: null, isGameStarted: false, countdown: -1, duration: 600 } };
 
     function setup() {
-      if (gameStarted) {
+      if (gameStarted && gameState.lobby.isGameStarted && gameState.lobby.countdown <= 0) {
         let canvasWidth = window.innerWidth;
         let canvasHeight = window.innerHeight;
         createCanvas(canvasWidth, canvasHeight);
@@ -317,44 +380,6 @@
           for (let i = 0; i < 5; i++) {
             nebulaZones.push(new NebulaZone());
           }
-        } else if (gameMode === 'multi') {
-          if (!Array.isArray(gameState.nebulaZones)) {
-            gameState.nebulaZones = [];
-            for (let i = 0; i < 5; i++) {
-              gameState.nebulaZones.push(new NebulaZone());
-            }
-          }
-          if (!Array.isArray(gameState.stardust)) {
-            gameState.stardust = [];
-            for (let i = 0; i < 1000; i++) {
-              gameState.stardust.push(new Stardust());
-            }
-          }
-          if (!Array.isArray(gameState.foods)) {
-            gameState.foods = [];
-            for (let i = 0; i < 1000; i++) {
-              gameState.foods.push(new Food());
-            }
-            console.log('Initialized fallback foods:', gameState.foods.length);
-          }
-          if (!Array.isArray(gameState.vortexes)) {
-            gameState.vortexes = [];
-            for (let i = 0; i < 20; i++) {
-              gameState.vortexes.push(new Vortex());
-            }
-          }
-          if (!Array.isArray(gameState.bots)) {
-            gameState.bots = [];
-            for (let i = 0; i < 10; i++) {
-              let bot = new AuraOrb(random(worldWidth), random(worldHeight), 10, false);
-              bot.name = botNames[i % botNames.length] + i;
-              bot.avatar = {
-                color: random(['#E6E6FA', '#7B68EE', '#00CED1']),
-                accessory: random(['✨', '🌌', '🔮'])
-              };
-              gameState.bots.push(bot);
-            }
-          }
         }
         if (isMobile) {
           setupTouchControls();
@@ -363,7 +388,32 @@
     }
 
     function draw() {
-      if (gameStarted && isAlive) {
+      if (gameStarted && isAlive && gameMode === 'multi' && !gameState.lobby.isGameStarted) {
+        document.getElementById('lobby').style.display = 'block';
+        const canvas = document.querySelector('canvas');
+        if (canvas) {
+          canvas.style.display = 'none';
+        }
+        return;
+      }
+
+      if (gameStarted && isAlive && gameState.lobby.isGameStarted && gameState.lobby.countdown > 0) {
+        document.getElementById('lobby').style.display = 'block';
+        document.getElementById('countdown').style.display = 'block';
+        document.getElementById('countdown').textContent = gameState.lobby.countdown;
+        const canvas = document.querySelector('canvas');
+        if (canvas) {
+          canvas.style.display = 'none';
+        }
+        return;
+      }
+
+      if (gameStarted && isAlive && gameState.lobby.isGameStarted && gameState.lobby.countdown <= 0) {
+        const canvas = document.querySelector('canvas');
+        if (canvas) {
+          canvas.style.display = 'block';
+        }
+
         if (gameMode === 'single') {
           if (surgeActive) {
             surgeTimer--;
@@ -527,8 +577,31 @@
           drawSurgeStatus();
           drawAbsorbStatus();
         } else {
-          if (!gameState.players[playerId] || !isAlive) {
+          if (!gameState.players[playerId] || (!isSpectating && !gameState.players[playerId].isActive)) {
             return;
+          }
+
+          if (!isSpectating) {
+            let input = {};
+            if (isMobile && joystick.active) {
+              input.joystick = { x: joystick.x / 25, y: joystick.y / 25 };
+            } else {
+              input.mouse = { x: mouseX + cameraX, y: mouseY + cameraY };
+            }
+            if (socket) {
+              socket.emit('playerInput', input);
+            }
+          } else {
+            if (!isMobile || joystick.active) {
+              let input = {};
+              input.mouse = {
+                x: cameraX + width / 2 + (isMobile ? joystick.x * 10 : mouseX),
+                y: cameraY + height / 2 + (isMobile ? joystick.y * 10 : mouseY)
+              };
+              if (socket) {
+                socket.emit('spectatorInput', input);
+              }
+            }
           }
 
           if (!cameraLocked) {
@@ -556,8 +629,8 @@
           noFill();
           rect(0, 0, worldWidth, worldHeight);
 
-          if (Array.isArray(gameState.nebulaZones)) {
-            for (let zone of gameState.nebulaZones) {
+          if (Array.isArray(gameState.clogZones)) {
+            for (let zone of gameState.clogZones) {
               fill(75, 0, 130, 150);
               noStroke();
               ellipse(zone.pos.x, zone.pos.y, zone.r * 2);
@@ -566,38 +639,31 @@
             }
           }
 
-          if (Array.isArray(gameState.stardust)) {
-            for (let d of gameState.stardust) {
+          if (Array.isArray(gameState.debris)) {
+            for (let d of gameState.debris) {
               fill(75, 0, 130);
               noStroke();
               ellipse(d.pos.x, d.pos.y, d.r * 2);
             }
           }
 
-          if (Array.isArray(gameState.foods)) {
-            for (let f of gameState.foods) {
-              fill(255, 255, 0);
-              noStroke();
-              ellipse(f.pos.x, f.pos.y, f.r * 2);
-            }
-          }
-
-          if (Array.isArray(gameState.vortexes)) {
-            for (let vortex of gameState.vortexes) {
+          if (Array.isArray(gameState.pipes)) {
+            for (let p of gameState.pipes) {
               fill(169, 169, 169);
               noStroke();
-              ellipse(vortex.pos.x, vortex.pos.y, vortex.r * 2);
+              ellipse(p.pos.x, p.pos.y, p.r * 2);
             }
           }
 
           if (gameState.players) {
             for (let id in gameState.players) {
               let player = gameState.players[id];
+              if (player.spectating) continue;
               let isHidden = false;
-              if (Array.isArray(gameState.vortexes)) {
-                for (let vortex of gameState.vortexes) {
-                  let d = dist(player.pos.x, player.pos.y, vortex.pos.x, vortex.pos.y);
-                  if (d < vortex.r + player.r) {
+              if (Array.isArray(gameState.pipes)) {
+                for (let pipe of gameState.pipes) {
+                  let d = dist(player.pos.x, player.pos.y, pipe.pos.x, pipe.pos.y);
+                  if (d < pipe.r + player.r) {
                     isHidden = true;
                     break;
                   }
@@ -630,10 +696,10 @@
           if (Array.isArray(gameState.bots)) {
             for (let bot of gameState.bots) {
               let isHidden = false;
-              if (Array.isArray(gameState.vortexes)) {
-                for (let vortex of gameState.vortexes) {
-                  let d = dist(bot.pos.x, bot.pos.y, vortex.pos.x, vortex.pos.y);
-                  if (d < vortex.r + bot.r) {
+              if (Array.isArray(gameState.pipes)) {
+                for (let pipe of gameState.pipes) {
+                  let d = dist(bot.pos.x, bot.pos.y, pipe.pos.x, pipe.pos.y);
+                  if (d < pipe.r + bot.r) {
                     isHidden = true;
                     break;
                   }
@@ -653,47 +719,13 @@
             }
           }
 
-          if (Array.isArray(gameState.foods) && gameState.players[playerId]) {
-            let currentPlayer = gameState.players[playerId];
-            for (let i = gameState.foods.length - 1; i >= 0; i--) {
-              let food = gameState.foods[i];
-              let d = dist(currentPlayer.pos.x, currentPlayer.pos.y, food.pos.x, food.pos.y);
-              if (d < currentPlayer.r + food.r) {
-                socket.emit('collectFood', { index: i });
-              }
-            }
-          }
-
-          if (Array.isArray(gameState.stardust) && gameState.players[playerId]) {
-            let currentPlayer = gameState.players[playerId];
-            for (let i = gameState.stardust.length - 1; i >= 0; i--) {
-              let stardust = gameState.stardust[i];
-              let d = dist(currentPlayer.pos.x, currentPlayer.pos.y, stardust.pos.x, stardust.pos.y);
-              if (d < currentPlayer.r + stardust.r) {
-                socket.emit('collectStardust', { index: i });
-              }
-            }
-          }
-
           pop();
 
           drawLeaderboard();
           drawMinimap();
-          drawSurgeStatus();
-          drawAbsorbStatus();
-
-          if (isMobile && joystick.active) {
-            updateJoystick();
-          }
-
-          let input = {};
-          if (isMobile && joystick.active) {
-            input.joystick = { x: joystick.x, y: joystick.y };
-          } else if (!cameraLocked) {
-            input.mouse = { x: mouseX + cameraX, y: mouseY + cameraY };
-          }
-          if (socket && isAlive) {
-            socket.emit('playerInput', input);
+          if (!isSpectating) {
+            drawSurgeStatus();
+            drawAbsorbStatus();
           }
         }
       }
@@ -708,12 +740,12 @@
     }
 
     function keyPressed() {
-      if (keyCode === 32 && isAlive) {
+      if (keyCode === 32 && isAlive && !isSpectating) {
         if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
           surgeActive = true;
           surgeTimer = 180;
         } else if (gameMode === 'multi' && socket) {
-          socket.emit('playerInput', { surge: true });
+          socket.emit('playerInput', { flushBoost: true });
         }
       } else if (keyCode === 76) {
         cameraLocked = !cameraLocked;
@@ -727,6 +759,8 @@
       document.getElementById('name-input').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'none';
       document.getElementById('nft-marketplace').style.display = 'none';
+      document.getElementById('lobby').style.display = 'none';
+      document.getElementById('leaderboard-end').style.display = 'none';
     }
 
     function showNameInput(mode) {
@@ -753,6 +787,8 @@
       document.getElementById('avatar-menu').style.display = 'none';
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('name-input').style.display = 'none';
+      document.getElementById('lobby').style.display = 'none';
+      document.getElementById('leaderboard-end').style.display = 'none';
     }
 
     function setupAvatarMenu() {
@@ -805,7 +841,9 @@
       gameStarted = false;
       isAlive = true;
       playerId = null;
-      gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
+      isHost = false;
+      isSpectating = false;
+      gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [], lobby: { players: {}, hostId: null, isGameStarted: false, countdown: -1, duration: 600 } };
       const canvas = document.querySelector('canvas');
       if (canvas) {
         canvas.style.display = 'none';
@@ -815,6 +853,8 @@
       document.getElementById('name-input').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'none';
       document.getElementById('nft-marketplace').style.display = 'none';
+      document.getElementById('lobby').style.display = 'none';
+      document.getElementById('leaderboard-end').style.display = 'none';
       if (gameMode === 'multi' && socket) {
         socket.disconnect();
         socket = null;
@@ -822,35 +862,51 @@
       remove();
     }
 
-    window.startGame = function() {
+    function joinGame() {
       playerName = document.getElementById('player-name').value.trim();
       if (playerName.length > 12) playerName = playerName.slice(0, 12);
       if (!playerName) playerName = 'Starfarer';
       document.getElementById('name-input').style.display = 'none';
-      const canvas = document.querySelector('canvas');
-      if (canvas) {
-        canvas.style.display = 'block';
-      }
-      gameStarted = true;
-      isAlive = true;
-      setup();
-      if (gameMode === 'multi') {
-        socket = io();
+      
+      if (gameMode === 'single') {
+        gameStarted = true;
+        isAlive = true;
+        const canvas = document.querySelector('canvas');
+        if (canvas) {
+          canvas.style.display = 'block';
+        }
+        setup();
+      } else if (gameMode === 'multi') {
+        socket = io('http://localhost:3000');
         socket.on('connect', () => {
           console.log('Connected to server with ID:', socket.id);
           playerId = socket.id;
-          socket.emit('playerJoin', { name: playerName, avatar, r: 10 });
+          socket.emit('joinLobby', { name: playerName, avatar });
+          gameStarted = true;
+          isAlive = true;
+          document.getElementById('lobby').style.display = 'block';
+        });
+        socket.on('lobbyUpdate', (lobbyState) => {
+          gameState.lobby = lobbyState;
+          updateLobbyUI();
         });
         socket.on('gameState', (state) => {
-          console.log('Received gameState:', state);
           if (isAlive && state.players && state.players[playerId]) {
-            state.nebulaZones = Array.isArray(state.nebulaZones) ? state.nebulaZones : [];
-            state.stardust = Array.isArray(state.stardust) ? state.stardust : [];
-            state.foods = Array.isArray(state.foods) ? state.foods : [];
-            state.vortexes = Array.isArray(state.vortexes) ? state.vortexes : [];
+            isSpectating = state.players[playerId].spectating;
+            state.clogZones = Array.isArray(state.clogZones) ? state.clogZones : [];
+            state.debris = Array.isArray(state.debris) ? state.debris : [];
+            state.pipes = Array.isArray(state.pipes) ? state.pipes : [];
             state.bots = Array.isArray(state.bots) ? state.bots : [];
             state.leaderboard = Array.isArray(state.leaderboard) ? state.leaderboard : [];
             gameState = state;
+            if (gameState.lobby.isGameStarted && gameState.lobby.countdown <= 0) {
+              document.getElementById('lobby').style.display = 'none';
+              const canvas = document.querySelector('canvas');
+              if (canvas) {
+                canvas.style.display = 'block';
+              }
+              setup();
+            }
           }
         });
         socket.on('flushed', (data) => {
@@ -858,7 +914,9 @@
           isAlive = false;
           gameStarted = false;
           playerId = null;
-          gameState = { players: {}, bots: [], stardust: [], foods: [], vortexes: [], nebulaZones: [], leaderboard: [] };
+          isHost = false;
+          isSpectating = false;
+          gameState = { players: {}, bots: [], debris: [], pipes: [], clogZones: [], leaderboard: [], lobby: { players: {}, hostId: null, isGameStarted: false, countdown: -1, duration: 600 } };
           if (socket) {
             socket.disconnect();
             socket = null;
@@ -866,10 +924,35 @@
           remove();
           location.reload();
         });
+        socket.on('gameEnded', (finalLeaderboard) => {
+          console.log('Game ended, showing leaderboard:', finalLeaderboard);
+          isAlive = false;
+          gameStarted = false;
+          document.getElementById('lobby').style.display = 'none';
+          document.getElementById('leaderboard-end').style.display = 'block';
+          const canvas = document.querySelector('canvas');
+          if (canvas) {
+            canvas.style.display = 'none';
+          }
+          const leaderboardList = document.getElementById('leaderboard-list');
+          leaderboardList.innerHTML = '';
+          for (let i = 0; i < finalLeaderboard.length; i++) {
+            const entry = document.createElement('div');
+            entry.innerHTML = `<span>${i + 1}. ${finalLeaderboard[i].name}</span><span>Size: ${finalLeaderboard[i].size}</span>`;
+            leaderboardList.appendChild(entry);
+          }
+          if (socket) {
+            socket.disconnect();
+            socket = null;
+          }
+          remove();
+        });
         socket.on('connect_error', (error) => {
           console.error('Socket.IO connection error:', error);
           gameStarted = false;
           isAlive = false;
+          isHost = false;
+          isSpectating = false;
           if (socket) {
             socket.disconnect();
             socket = null;
@@ -878,7 +961,57 @@
           location.reload();
         });
       }
-    };
+    }
+
+    function toggleReady() {
+      if (socket && gameMode === 'multi') {
+        socket.emit('toggleReady');
+      }
+    }
+
+    function toggleSpectate() {
+      if (socket && gameMode === 'multi' && isHost) {
+        socket.emit('toggleSpectate');
+      }
+    }
+
+    function startGame() {
+      if (socket && gameMode === 'multi' && isHost) {
+        const duration = parseInt(document.getElementById('game-duration').value);
+        socket.emit('startGame', { duration });
+      }
+    }
+
+    function updateLobbyUI() {
+      const playerList = document.getElementById('player-list');
+      const readyButton = document.getElementById('ready-button');
+      const startButton = document.getElementById('start-button');
+      const spectateButton = document.getElementById('spectate-button');
+      const durationSelect = document.getElementById('game-duration');
+      playerList.innerHTML = '';
+      isHost = playerId === gameState.lobby.hostId;
+
+      for (let id in gameState.lobby.players) {
+        const player = gameState.lobby.players[id];
+        const playerDiv = document.createElement('div');
+        playerDiv.innerHTML = `<span>${player.name}${id === gameState.lobby.hostId ? ' (Host)' : ''}${player.spectating ? ' (Spectating)' : ''}</span><span>${player.ready ? 'Ready' : 'Not Ready'}</span>`;
+        playerList.appendChild(playerDiv);
+      }
+
+      readyButton.style.display = isSpectating ? 'none' : 'block';
+      readyButton.innerHTML = gameState.lobby.players[playerId]?.ready ? '<i class="fas fa-times"></i> Unready' : '<i class="fas fa-check"></i> Ready';
+      startButton.disabled = !isHost || gameState.lobby.isGameStarted;
+      spectateButton.style.display = isHost ? 'block' : 'none';
+      spectateButton.innerHTML = gameState.lobby.players[playerId]?.spectating ? '<i class="fas fa-eye-slash"></i> Play' : '<i class="fas fa-eye"></i> Spectate';
+      durationSelect.style.display = isHost && !gameState.lobby.isGameStarted ? 'block' : 'none';
+
+      if (gameState.lobby.isGameStarted && gameState.lobby.countdown > 0) {
+        document.getElementById('countdown').style.display = 'block';
+        document.getElementById('countdown').textContent = gameState.lobby.countdown;
+      } else {
+        document.getElementById('countdown').style.display = 'none';
+      }
+    }
 
     function setupTouchControls() {
       let joystickDiv = document.getElementById('joystick');
@@ -908,6 +1041,7 @@
           joystick.x = 25 * cos(angle);
           joystick.y = 25 * sin(angle);
         }
+        updateJoystick();
       });
 
       joystickDiv.addEventListener('touchend', () => {
@@ -922,8 +1056,8 @@
         if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
           surgeActive = true;
           surgeTimer = 180;
-        } else if (gameMode === 'multi' && socket && isAlive) {
-          socket.emit('playerInput', { surge: true });
+        } else if (gameMode === 'multi' && socket && isAlive && !isSpectating) {
+          socket.emit('playerInput', { flushBoost: true });
         }
       });
 
@@ -1029,28 +1163,29 @@
           ellipse(bot.pos.x * scaleX, bot.pos.y * scaleY, bot.r * 2 * scaleX);
         }
       } else {
-        if (Array.isArray(gameState.nebulaZones)) {
+        if (Array.isArray(gameState.clogZones)) {
           fill(75, 0, 130);
           noStroke();
-          for (let zone of gameState.nebulaZones) {
+          for (let zone of gameState.clogZones) {
             ellipse(zone.pos.x * scaleX, zone.pos.y * scaleY, zone.r * 2 * scaleX);
           }
         }
-        if (Array.isArray(gameState.foods)) {
+        if (Array.isArray(gameState.debris)) {
           fill(255, 255, 0);
-          for (let f of gameState.foods) {
-            ellipse(f.pos.x * scaleX, f.pos.y * scaleY, f.r * 2 * scaleX);
+          for (let d of gameState.debris) {
+            ellipse(d.pos.x * scaleX, d.pos.y * scaleY, d.r * 2 * scaleX);
           }
         }
-        if (Array.isArray(gameState.vortexes)) {
+        if (Array.isArray(gameState.pipes)) {
           fill(169, 169, 169);
-          for (let vortex of gameState.vortexes) {
-            ellipse(vortex.pos.x * scaleX, vortex.pos.y * scaleY, vortex.r * 2 * scaleX);
+          for (let pipe of gameState.pipes) {
+            ellipse(pipe.pos.x * scaleX, pipe.pos.y * scaleY, pipe.r * 2 * scaleX);
           }
         }
         if (gameState.players) {
           for (let id in gameState.players) {
             let p = gameState.players[id];
+            if (p.spectating) continue;
             let [r, g, b] = hexToRgb(p.avatar.color);
             fill(r, g, b);
             ellipse(p.pos.x * scaleX, p.pos.y * scaleY, p.r * 2 * scaleX);
@@ -1068,6 +1203,7 @@
     }
 
     function drawSurgeStatus() {
+      if (isSpectating) return;
       push();
       let isMobile = windowWidth < 768;
       let boxWidth = isMobile ? 50 : 110;
@@ -1081,7 +1217,7 @@
       rect(x, y, boxWidth, boxHeight, 10);
 
       let maxDuration = 180;
-      let maxCooldown = 300;
+      let maxCooldown = 600;
       let progress = 1;
 
       if (gameMode === 'single') {
@@ -1092,10 +1228,10 @@
         }
       } else if (gameState.players && gameState.players[playerId]) {
         let player = gameState.players[playerId];
-        if (player.surgeActive) {
-          progress = player.surgeTimer / maxDuration;
-        } else if (player.surgeCooldown > 0) {
-          progress = 1 - (player.surgeCooldown / maxCooldown);
+        if (player.flushBoostActive) {
+          progress = player.flushBoostTimer / maxDuration;
+        } else if (player.flushBoostCooldown > 0) {
+          progress = 1 - (player.flushBoostCooldown / maxCooldown);
         }
       }
 
@@ -1143,6 +1279,7 @@
     }
 
     function drawAbsorbStatus() {
+      if (isSpectating) return;
       if (absorbTimer > 0) {
         push();
         let isMobile = windowWidth < 768;
@@ -1204,9 +1341,9 @@
         this.name = "";
         this.inNebulaZone = false;
         this.avatar = isPlayer ? avatar : { color: '#E6E6FA', accessory: '✨' };
-        this.surgeActive = false;
-        this.surgeTimer = 0;
-        this.surgeCooldown = 0;
+        this.flushBoostActive = false;
+        this.flushBoostTimer = 0;
+        this.flushBoostCooldown = 0;
       }
 
       update() {
@@ -1246,8 +1383,7 @@
         let nearest = null;
         let minDist = Infinity;
         let collectibles = gameMode === 'single' ? [...stardust, ...foods] : [
-          ...(Array.isArray(gameState.stardust) ? gameState.stardust : []),
-          ...(Array.isArray(gameState.foods) ? gameState.foods : [])
+          ...(Array.isArray(gameState.debris) ? gameState.debris : [])
         ];
         for (let c of collectibles) {
           let dist = p5.Vector.dist(this.pos, c.pos);
@@ -1261,7 +1397,7 @@
 
       show() {
         let isHidden = false;
-        let vortexArray = gameMode === 'single' ? vortexes : (Array.isArray(gameState.vortexes) ? gameState.vortexes : []);
+        let vortexArray = gameMode === 'single' ? vortexes : (Array.isArray(gameState.pipes) ? gameState.pipes : []);
         for (let vortex of vortexArray) {
           if (p5.Vector.dist(this.pos, vortex.pos) < vortex.r + this.r) {
             isHidden = true;
@@ -1375,8 +1511,8 @@
       update() {
         this.spawnTimer++;
         if (this.spawnTimer >= 60) {
-          let targetStardust = gameMode === 'single' ? stardust : (Array.isArray(gameState.stardust) ? gameState.stardust : []);
-          let targetFoods = gameMode === 'single' ? foods : (Array.isArray(gameState.foods) ? gameState.foods : []);
+          let targetStardust = gameMode === 'single' ? stardust : (Array.isArray(gameState.debris) ? gameState.debris : []);
+          let targetFoods = gameMode === 'single' ? foods : (Array.isArray(gameState.debris) ? gameState.debris : []);
           targetStardust.push(new Stardust(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
           targetFoods.push(new Food(this.pos.x + random(-this.r, this.r), this.pos.y + random(-this.r, this.r)));
           this.spawnTimer = 0;
