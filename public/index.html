@@ -165,8 +165,9 @@
     }
     #joystick {
       position: fixed;
-      bottom: 30px;
-      left: 15px;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
       width: 80px;
       height: 80px;
       background: rgba(123, 104, 238, 0.4);
@@ -203,7 +204,19 @@
       box-shadow: 0 0 10px #ff4500;
     }
     #lock-button {
-      bottom: 90px;
+      bottom: 30px;
+      right: 75px;
+    }
+    #timer-display {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #7b68ee;
+      font-size: 16px;
+      font-family: 'Press Start 2P', cursive;
+      text-shadow: 0 0 10px #7b68ee;
+      display: none;
     }
     @media (max-width: 600px) {
       #menu, #mode-selection, #name-input, #avatar-menu, #nft-marketplace, #lobby, #leaderboard-end {
@@ -223,6 +236,9 @@
       }
       #joystick, #skill-button, #lock-button {
         display: block;
+      }
+      #timer-display {
+        font-size: 12px;
       }
     }
   </style>
@@ -312,6 +328,7 @@
   </div>
   <div id="skill-button"><i class="fas fa-bolt"></i> Surge</div>
   <div id="lock-button"><i class="fas fa-lock"></i> Lock</div>
+  <div id="timer-display"></div>
   <script>
     let socket;
     let gameStarted = false;
@@ -322,12 +339,14 @@
     let cameraX = 0;
     let cameraY = 0;
     let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    let joystick = { active: false, x: 0, y: 0, baseX: 50, baseY: window.innerHeight - 50 };
+    let joystick = { active: false, x: 0, y: 0, baseX: window.innerWidth / 2, baseY: window.innerHeight - 100 };
     let playerId = null;
     let isAlive = true;
     let cameraLocked = false;
     let isHost = false;
     let isSpectating = false;
+    let lastTapTime = 0;
+    let tapCount = 0;
 
     // Avatar settings
     let avatar = {
@@ -390,6 +409,7 @@
     function draw() {
       if (gameStarted && isAlive && gameMode === 'multi' && !gameState.lobby.isGameStarted) {
         document.getElementById('lobby').style.display = 'block';
+        document.getElementById('timer-display').style.display = 'none';
         const canvas = document.querySelector('canvas');
         if (canvas) {
           canvas.style.display = 'none';
@@ -400,6 +420,7 @@
       if (gameStarted && isAlive && gameState.lobby.isGameStarted && gameState.lobby.countdown > 0) {
         document.getElementById('lobby').style.display = 'block';
         document.getElementById('countdown').style.display = 'block';
+        document.getElementById('timer-display').style.display = 'none';
         document.getElementById('countdown').textContent = gameState.lobby.countdown;
         const canvas = document.querySelector('canvas');
         if (canvas) {
@@ -413,6 +434,8 @@
         if (canvas) {
           canvas.style.display = 'block';
         }
+        document.getElementById('timer-display').style.display = 'block';
+        updateTimerDisplay();
 
         if (gameMode === 'single') {
           if (surgeActive) {
@@ -731,6 +754,13 @@
       }
     }
 
+    function updateTimerDisplay() {
+      let timeLeft = gameMode === 'multi' ? gameState.lobby.duration - gameState.lobby.gameTime : 0;
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = Math.floor(timeLeft % 60);
+      document.getElementById('timer-display').textContent = `Time: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
     function hexToRgb(hex) {
       hex = hex.replace('#', '');
       let r = parseInt(hex.substring(0, 2), 16);
@@ -761,6 +791,7 @@
       document.getElementById('nft-marketplace').style.display = 'none';
       document.getElementById('lobby').style.display = 'none';
       document.getElementById('leaderboard-end').style.display = 'none';
+      document.getElementById('timer-display').style.display = 'none';
     }
 
     function showNameInput(mode) {
@@ -768,17 +799,20 @@
       document.getElementById('mode-selection').style.display = 'none';
       document.getElementById('name-input').style.display = 'block';
       document.getElementById('player-name').focus();
+      document.getElementById('timer-display').style.display = 'none';
     }
 
     function showAvatarMenu() {
       document.getElementById('menu').style.display = 'none';
       document.getElementById('avatar-menu').style.display = 'block';
+      document.getElementById('timer-display').style.display = 'none';
       setupAvatarMenu();
     }
 
     function showNFTMarketplace() {
       document.getElementById('menu').style.display = 'none';
       document.getElementById('nft-marketplace').style.display = 'block';
+      document.getElementById('timer-display').style.display = 'none';
     }
 
     function showLeaderboard() {
@@ -789,6 +823,7 @@
       document.getElementById('name-input').style.display = 'none';
       document.getElementById('lobby').style.display = 'none';
       document.getElementById('leaderboard-end').style.display = 'none';
+      document.getElementById('timer-display').style.display = 'none';
     }
 
     function setupAvatarMenu() {
@@ -855,6 +890,7 @@
       document.getElementById('nft-marketplace').style.display = 'none';
       document.getElementById('lobby').style.display = 'none';
       document.getElementById('leaderboard-end').style.display = 'none';
+      document.getElementById('timer-display').style.display = 'none';
       if (gameMode === 'multi' && socket) {
         socket.disconnect();
         socket = null;
@@ -930,6 +966,7 @@
           gameStarted = false;
           document.getElementById('lobby').style.display = 'none';
           document.getElementById('leaderboard-end').style.display = 'block';
+          document.getElementById('timer-display').style.display = 'none';
           const canvas = document.querySelector('canvas');
           if (canvas) {
             canvas.style.display = 'none';
@@ -1023,25 +1060,18 @@
         joystick.active = true;
         let touch = e.touches[0];
         let rect = joystickDiv.getBoundingClientRect();
-        joystick.baseX = touch.clientX - rect.width / 2;
-        joystick.baseY = touch.clientY - rect.height / 2;
+        joystick.baseX = window.innerWidth / 2;
+        joystick.baseY = window.innerHeight - 100;
         joystickDiv.style.left = joystick.baseX + 'px';
         joystickDiv.style.top = joystick.baseY + 'px';
+        updateJoystickPosition(touch, rect);
       });
 
       joystickDiv.addEventListener('touchmove', (e) => {
         e.preventDefault();
         let touch = e.touches[0];
         let rect = joystickDiv.getBoundingClientRect();
-        joystick.x = touch.clientX - rect.left - rect.width / 2;
-        joystick.y = touch.clientY - rect.top - rect.height / 2;
-        let dist = sqrt(joystick.x * joystick.x + joystick.y * joystick.y);
-        if (dist > 25) {
-          let angle = atan2(joystick.y, joystick.x);
-          joystick.x = 25 * cos(angle);
-          joystick.y = 25 * sin(angle);
-        }
-        updateJoystick();
+        updateJoystickPosition(touch, rect);
       });
 
       joystickDiv.addEventListener('touchend', () => {
@@ -1053,12 +1083,22 @@
 
       skillButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
-          surgeActive = true;
-          surgeTimer = 180;
-        } else if (gameMode === 'multi' && socket && isAlive && !isSpectating) {
-          socket.emit('playerInput', { flushBoost: true });
+        let currentTime = Date.now();
+        if (currentTime - lastTapTime < 300) {
+          tapCount++;
+          if (tapCount === 2) {
+            if (gameMode === 'single' && !surgeActive && surgeCooldown <= 0) {
+              surgeActive = true;
+              surgeTimer = 180;
+            } else if (gameMode === 'multi' && socket && isAlive && !isSpectating) {
+              socket.emit('playerInput', { flushBoost: true });
+            }
+            tapCount = 0;
+          }
+        } else {
+          tapCount = 1;
         }
+        lastTapTime = currentTime;
       });
 
       lockButton.addEventListener('touchstart', (e) => {
@@ -1066,6 +1106,18 @@
         cameraLocked = !cameraLocked;
         lockButton.innerHTML = cameraLocked ? '<i class="fas fa-lock"></i> Unlock' : '<i class="fas fa-lock"></i> Lock';
       });
+    }
+
+    function updateJoystickPosition(touch, rect) {
+      joystick.x = touch.clientX - rect.left - rect.width / 2;
+      joystick.y = touch.clientY - rect.top - rect.height / 2;
+      let dist = sqrt(joystick.x * joystick.x + joystick.y * joystick.y);
+      if (dist > 25) {
+        let angle = atan2(joystick.y, joystick.x);
+        joystick.x = 25 * cos(angle);
+        joystick.y = 25 * sin(angle);
+      }
+      updateJoystick();
     }
 
     function updateJoystick() {
